@@ -23,7 +23,14 @@ interface IUserInfo {
 interface IProductsData {
     products: IProduct[];
     preview: string | null;
+
+    getProduct(productId: string): IProduct;
 }
+
+interface IUserData {
+    
+}
+
 
 type TProductInfo = Pick<IProduct, 'description' | 'image' | 'title' | 'category' | 'price'>;
 type TBasket = Pick<IProduct, 'title' | 'price'>;
