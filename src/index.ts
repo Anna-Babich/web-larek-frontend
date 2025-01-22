@@ -1,11 +1,5 @@
 import './scss/styles.scss';
-// IProduct - интерфейс со всеми свойствами продукта
-// IBasket - интерфейс корзины с ее содержимым и общей стоимостью товаров в ней
-// IOrder - интерфейс заказа для отправки на сервер
-// TOrder - объединеный тип формы заказа и контактов
-// TOrderForm - тип формы заказа
-// TContactsForm - тип формы контактов
-// IOrderResult - интерфейс результата отправки заказа
+
 interface IProduct {
     _id: string;
     description: string;
