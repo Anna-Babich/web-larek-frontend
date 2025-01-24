@@ -25,9 +25,11 @@ interface IProductsData {
     getProduct(productId: string): IProduct;
 }
 
-
 interface IUserData {
-    order: IUser[];
+    order: IUser;
+
+    checkPaymentValidation(data: Record<keyof TFormPayment, string>): boolean;
+    checkContactValidation(data: Record<keyof TFormContact, string>): boolean;
 }
 
 
