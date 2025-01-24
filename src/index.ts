@@ -27,9 +27,8 @@ interface IProductsData {
 
 
 interface IUserData {
-    _order: IUser[];
+    order: IUser[];
 }
-
 
 
 type TProductPage = Pick<IProduct, '_id' | 'title' | 'category' | 'image' | 'price'>;
@@ -37,3 +36,11 @@ type TProductModal = Pick<IProduct, 'description' | 'image' | 'title' | 'categor
 type TBasket = Pick<IProduct, '_id' | 'title' | 'price'>;
 type TFormPayment = Pick<IUser, 'payment' | 'address'>;
 type TFormContact = Pick<IUser, 'email' | 'phone'>;
+
+type TBasketData = {
+    itemBasket: TBasket[];
+
+    getResult(price: number | null): number;
+    addProductBasket(id: string): void;
+    deleteProductBasket(id: string): void;
+}
