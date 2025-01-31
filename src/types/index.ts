@@ -1,4 +1,3 @@
-
 interface IProduct {
     _id: string;
     description: string;
@@ -44,4 +43,3 @@ type TBasketData = {
     getResult(price: number | null): number;
     addProductBasket(id: string): void;
     deleteProductBasket(id: string): void;
-}
