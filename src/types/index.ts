@@ -1,5 +1,5 @@
-interface IProduct {
-    _id: string;
+export interface IProduct {
+    id: string;
     description: string;
     image: string;
     title: string;
@@ -7,7 +7,7 @@ interface IProduct {
     price: number | null;
 }
 
-interface IUser {
+export interface IUser {
     payment: string;
     email: string;
     phone: string;
@@ -16,30 +16,38 @@ interface IUser {
     items: string[];
 }
 
-interface IProductsData {
-    products: IProduct[];
-    preview: string | null;
-
-    getProduct(productId: string): IProduct;
+export interface IProductsData {
+    _products: IProduct[];
+    _preview: string | null;
+    
+    getResult(arrayBasket: TBasket[]): number;
+    // getProduct(productId: string): IProduct;
 }
 
-interface IUserData {
-    order: IUser;
+export interface IUserData {
+    _order: IUser;
 
-    checkPaymentValidation(data: Record<keyof TFormPayment, string>): boolean;
-    checkContactValidation(data: Record<keyof TFormContact, string>): boolean;
+    
+
+    // checkPaymentValidation(data: Record<keyof TFormPayment, string>): boolean;
+    // checkContactValidation(data: Record<keyof TFormContact, string>): boolean;
 }
 
+export type TFormErrors = Partial<Record<keyof TForm, string>>;
 
-type TProductPage = Pick<IProduct, '_id' | 'title' | 'category' | 'image' | 'price'>;
-type TProductModal = Pick<IProduct, 'description' | 'image' | 'title' | 'category' | 'price'>;
-type TBasket = Pick<IProduct, '_id' | 'title' | 'price'>;
-type TFormPayment = Pick<IUser, 'payment' | 'address'>;
-type TFormContact = Pick<IUser, 'email' | 'phone'>;
 
-type TBasketData = {
+export type TProductPage = Pick<IProduct, 'id' | 'title' | 'category' | 'image' | 'price'>;
+export type TProductModal = Pick<IProduct, 'description' | 'image' | 'title' | 'category' | 'price'>;
+export type TBasket = Pick<IProduct, 'id' | 'title' | 'price'>;
+
+export type TForm = Pick<IUser, 'address' | 'email' | 'phone'>;
+export type TFormPayment = Pick<IUser, 'payment' | 'address'>;
+export type TFormContact = Pick<IUser, 'email' | 'phone'>;
+
+export type TBasketData = {
     itemBasket: TBasket[];
 
-    getResult(price: number | null): number;
+    getResult(array: TBasket): number;
     addProductBasket(id: string): void;
     deleteProductBasket(id: string): void;
+}
