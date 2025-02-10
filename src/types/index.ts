@@ -51,3 +51,13 @@ export type TBasketData = {
     addProductBasket(id: string): void;
     deleteProductBasket(id: string): void;
 }
+
+
+
+export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
+
+export interface IApi {
+    baseUrl: string;
+    get<T>(uri: string): Promise<T>;
+    post<T>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
+}
