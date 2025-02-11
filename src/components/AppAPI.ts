@@ -8,8 +8,8 @@ export class AppApi {
 	}
 
 	
-	getProducts(): Promise<IProduct[]> {
-		return this._baseApi.get<IProduct[]>(`/product`).then((product: IProduct[]) => product);
+	getProducts(): any {
+		return this._baseApi.get<IProduct[]>(`/product`).then((product: any) => product);
 	}
 
 	postUser(data: IUser): Promise<IUser> {

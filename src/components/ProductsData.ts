@@ -26,7 +26,12 @@ export class ProductData implements IProductsData{
 
     // Получение полной информации по товару через id
     getProduct(productId: string) {
-        return this._products.find((item) => item.id === productId);
+        console.log(productId);
+        
+        return this._products.find((item) => {
+            console.log(item);
+            item._id === productId
+        });
     }
 
     getResult(arrayBasket: TBasket[]): number{
@@ -43,7 +48,7 @@ export class ProductData implements IProductsData{
     }
 
     deleteProductBasket(productId: string): void {
-        this._basket = this._basket.filter(card => card.id !== productId);
+        this._basket = this._basket.filter(card => card._id !== productId);
         this.events.emit('products:changed');
     }
 

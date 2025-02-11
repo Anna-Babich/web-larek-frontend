@@ -7,7 +7,8 @@ import {AppApi} from './components/AppAPI';
 import {Api} from './components/base/api';
 import {API_URL, settings} from './utils/constants';
 import {Card} from './components/Card';
-import {ensureElement} from './utils/utils';
+import {ensureElement, cloneTemplate} from './utils/utils';
+import {CardsContainer} from './components/cardsContainer';
 
 const events = new EventEmitter();
 
@@ -18,36 +19,38 @@ const baseApi: IApi = new Api(API_URL, settings);
 const api = new AppApi(baseApi);
 
 
-const ListProductTest = [
-    {
-    "id": "854cef69-976d-4c2a-a18c-2aa45046c390",
-    "description": "Если планируете решать задачи в тренажёре, берите два.",
-    "image": "/5_Dots.svg",
-    "title": "+1 час в сутках",
-    "category": "софт-скил",
-    "price": 750 }, 
-    {
-    "id": "c101ab44-ed99-4a54-990d-47aa2bb4e7d9",
-    "description": "Лизните этот леденец, чтобы мгновенно запоминать и узнавать любой цветовой код CSS.",
-    "image": "/Shell.svg",
-    "title": "HEX-леденец",
-    "category": "другое",
-    "price": 1450},
-    {
-    "id": "b06cde61-912f-4663-9751-09956c0eed67",
-    "description": "Будет стоять над душой и не давать прокрастинировать.",
-    "image": "/Asterisk_2.svg",
-    "title": "Мамка-таймер",
-    "category": "софт-скил",
-    "price": null},
-    {
-    "id": "412bcf81-7e75-4e70-bdb9-d3c73c9803b7",
-    "description": "Откройте эти куки, чтобы узнать, какой фреймворк вы должны изучить дальше.",
-    "image": "/Soft_Flower.svg",
-    "title": "Фреймворк куки судьбы",
-    "category": "дополнительное",
-    "price": 2500
-    }]
+// const ListProductTest = [
+//     {
+//     "_id": "854cef69-976d-4c2a-a18c-2aa45046c390",
+//     "description": "Если планируете решать задачи в тренажёре, берите два.",
+//     "image": "/5_Dots.svg",
+//     "title": "+1 час в сутках",
+//     "category": "софт-скил",
+//     "price": 750 }, 
+//     {
+//     "_id": "c101ab44-ed99-4a54-990d-47aa2bb4e7d9",
+//     "description": "Лизните этот леденец, чтобы мгновенно запоминать и узнавать любой цветовой код CSS.",
+//     "image": "/Shell.svg",
+//     "title": "HEX-леденец",
+//     "category": "другое",
+//     "price": 1450},
+//     {
+//     "_id": "b06cde61-912f-4663-9751-09956c0eed67",
+//     "description": "Будет стоять над душой и не давать прокрастинировать.",
+//     "image": "/Asterisk_2.svg",
+//     "title": "Мамка-таймер",
+//     "category": "софт-скил",
+//     "price": null},
+//     {
+//     "_id": "412bcf81-7e75-4e70-bdb9-d3c73c9803b7",
+//     "description": "Откройте эти куки, чтобы узнать, какой фреймворк вы должны изучить дальше.",
+//     "image": "/Soft_Flower.svg",
+//     "title": "Фреймворк куки судьбы",
+//     "category": "дополнительное",
+//     "price": 2500
+//     }]
+
+// productData.product = ListProductTest;
 
 const UserTest = {
     "payment": "online",
@@ -76,8 +79,6 @@ const basketTest = [{
 
 
 
-productData.product = ListProductTest;
-// console.log(productData.product);
 
 // console.log(productData.getProduct("b06cde61-912f-4663-9751-09956c0eed67"));
 
@@ -127,24 +128,47 @@ events.onAll((event) => {
 })
 
 
-api.getProducts()
-    .then((initialProducts) => {
-        productData.product = initialProducts;
-        console.log(productData.product);
-    })
-    .catch((err) => {
-        console.error(err);
-    });
 
 const cardTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
+
+const cardsContainer = new CardsContainer(document.querySelector('.gallery'));
+
+
 
 const cardTest = ensureElement<HTMLTemplateElement>('#card-preview');
 const bassketTest = ensureElement<HTMLTemplateElement>('#card-basket');
 
-const gallery = document.querySelector('.gallery');
+// const gallery = document.querySelector('.gallery');
 
-const card = new Card(cardTemplate, events);
-console.log(card);
-console.log(card.setData(productData.product[2]));
-gallery.prepend(card.render());
+// const card = new Card(cloneTemplate(cardTemplate), events);
+// const card1 = new Card(cloneTemplate(cardTemplate), events);
+// const cardArray: HTMLElement[] = [];
+// cardArray.push(card.render(ListProductTest[1]));
+// cardArray.push(card1.render(ListProductTest[2]));
+// cardsContainer.render({catalog: cardArray});
 
+// gallery.prepend(card.render(productData.product[2]));
+
+
+
+api.getProducts()
+    .then((data: any) => {
+            productData.product = data.items;
+            events.emit('initialData:loaded'); 
+            console.log(data);
+        
+    })
+    .catch((err: any) => {
+        console.error(err);
+    });
+
+events.on('initialData:loaded', () => {
+    console.log(productData.product);
+        const cardsArray = productData.product.map((card) => {
+        const cardInstant = new Card(cloneTemplate(cardTemplate), events);
+        return cardInstant.render(card);
+    });
+
+    cardsContainer.render({catalog: cardsArray});
+
+})

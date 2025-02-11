@@ -1,8 +1,9 @@
 import {IProduct} from '../types/index';
-import { cloneTemplate } from '../utils/utils';
+// import { cloneTemplate } from '../utils/utils';
 import {IEvents} from './base/events';
+import {Component} from './base/Component';
 
-export class Card {
+export class Card extends Component<IProduct>{
     element: HTMLElement;
 
     btnGallery: HTMLButtonElement;
@@ -12,7 +13,7 @@ export class Card {
     titleCard: HTMLElement;
     descriptionCard: HTMLElement;
     categoryCard: HTMLElement;
-    imageCard: HTMLElement;
+    imageCard: HTMLImageElement;
     priceCard: HTMLElement;
     basketIndex: HTMLElement;
 
@@ -20,18 +21,19 @@ export class Card {
 
     events: IEvents;
 
-    constructor(template: HTMLTemplateElement, events: IEvents) {
+    constructor(protected container: HTMLElement, events: IEvents) {
+        super(container);
         this.events = events;
-        this.element = cloneTemplate(template);
+        // this.element = cloneTemplate(container);
 
-        this.btnGallery = this.element.querySelector('.gallery__item');
-        this.cardButton = this.element.querySelector('.card__button');
-        this.titleCard = this.element.querySelector('.card__title');
-        this.descriptionCard = this.element.querySelector('.card__text')
-        this.categoryCard = this.element.querySelector('.card__category');
-        this.imageCard = this.element.querySelector('.card__image');
-        this.priceCard = this.element.querySelector('.card__price');
-        this.basketIndex = this.element.querySelector('.basket__item-index');
+        this.btnGallery = this.container.querySelector('.gallery__item');
+        this.cardButton = this.container.querySelector('.card__button');
+        this.titleCard = this.container.querySelector('.card__title');
+        this.descriptionCard = this.container.querySelector('.card__text')
+        this.categoryCard = this.container.querySelector('.card__category');
+        this.imageCard = this.container.querySelector('.card__image');
+        this.priceCard = this.container.querySelector('.card__price');
+        this.basketIndex = this.container.querySelector('.basket__item-index');
 
         // this.btnGallery.addEventListener('click', () => {
         //     this.events.emit('card:select', {card: this})
@@ -46,17 +48,36 @@ export class Card {
         // });
     }
 
+    render(data?: Partial<IProduct>): HTMLElement;
+	// render(cardData: Partial<IProduct>): HTMLElement;
 
-    setData (cardData: IProduct) {
-        this.idCard = cardData.id;
-        this.categoryCard.textContent = cardData.category;
-        this.titleCard.textContent = cardData.title;
-        this.imageCard.style.background = `src="<%=require('${cardData.image}')%>"`;
-        this.priceCard.textContent = String(`${cardData.price} ` + `синапсов`);
 
-        return this.element;
+    render (cardData: Partial<IProduct> | undefined) {
+        if(!cardData) return this.container;
+
+        const{...allCardData} = cardData;
+        return super.render(allCardData);
+        // Object.assign(this, allCardData);
+        // return this.element;
     }
 
+    set price (price: number) {
+        this.priceCard.textContent = String(`${price} ` + `синапсов`);
+    }
+
+    set image (img: string) {
+        // this.imageCard.setAttribute('src', `${img}`);
+        console.log(img);
+        this.setImage(this.imageCard, img);
+    }
+
+    set title (title: string) {
+        this.titleCard.textContent = title;
+    }
+
+    set category (category: string) {
+        this.categoryCard.textContent = category;
+    }
 
     set _id(id) {
 		this.idCard = id;
@@ -65,9 +86,7 @@ export class Card {
 		return this.idCard;
 	}
 
-    render() {
-        return this.element;
-    }
+    
    
 }
 
