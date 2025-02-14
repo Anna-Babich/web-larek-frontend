@@ -13,6 +13,12 @@ export abstract class Component<T> {
         }
     }
 
+    setText(element: HTMLElement, value: unknown) {
+        if (element) {
+            element.textContent = String(value);
+        }
+    }
+
     render (data?: Partial<T>): HTMLElement {
         Object.assign(this as object, data ?? {});
         return this.container;

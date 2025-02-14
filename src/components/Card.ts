@@ -6,10 +6,11 @@ import {Component} from './base/Component';
 export class Card extends Component<IProduct>{
     element: HTMLElement;
 
-    btnGallery: HTMLButtonElement;
-    btnAddInBasket: HTMLButtonElement;
-    btnDeleteInBasket: HTMLButtonElement;
+    basketButton: HTMLButtonElement;
     cardButton: HTMLButtonElement;
+
+    btnDeleteInBasket: HTMLButtonElement;
+    
     titleCard: HTMLElement;
     descriptionCard: HTMLElement;
     categoryCard: HTMLElement;
@@ -24,10 +25,12 @@ export class Card extends Component<IProduct>{
     constructor(protected container: HTMLElement, events: IEvents) {
         super(container);
         this.events = events;
-        // this.element = cloneTemplate(container);
+        
+        this.cardButton = this.container.querySelector('.button');
+        this.basketButton = this.container.querySelector('.basket__button');
+        this.btnDeleteInBasket = this.container.querySelector('.basket__item-delete');
 
-        this.btnGallery = this.container.querySelector('.gallery__item');
-        this.cardButton = this.container.querySelector('.card__button');
+
         this.titleCard = this.container.querySelector('.card__title');
         this.descriptionCard = this.container.querySelector('.card__text')
         this.categoryCard = this.container.querySelector('.card__category');
@@ -35,17 +38,30 @@ export class Card extends Component<IProduct>{
         this.priceCard = this.container.querySelector('.card__price');
         this.basketIndex = this.container.querySelector('.basket__item-index');
 
-        // this.btnGallery.addEventListener('click', () => {
-        //     this.events.emit('card:select', {card: this})
-        // });
 
-        // this.btnAddInBasket.addEventListener('click', () => {
-        //     this.events.emit('card:add', {card: this})
-        // });
+        if(this.container.classList.contains('gallery__item')){
+            this.container.addEventListener('click', () => {
+                this.events.emit('card:select', this)
+            });
+        }
 
-        // this.btnDeleteInBasket.addEventListener('click', () => {
-        //     this.events.emit('card:delete', {card: this})
-        // });
+        if(this.container.classList.contains('card_full')) {
+            this.cardButton.addEventListener('click', () => {
+                this.events.emit('product:buy', this)
+            })
+        }
+
+        if(this.container.classList.contains('basket')) {
+            this.basketButton.addEventListener('click', () => {
+                this.events.emit('basket:buy')
+            })
+        }
+
+        if(this.container.classList.contains('basket__item')) {
+            this.btnDeleteInBasket.addEventListener('click', () => {
+                this.events.emit('basket:delete', this)
+            })
+        }
     }
 
     render(data?: Partial<IProduct>): HTMLElement;
@@ -67,7 +83,6 @@ export class Card extends Component<IProduct>{
 
     set image (img: string) {
         // this.imageCard.setAttribute('src', `${img}`);
-        console.log(img);
         this.setImage(this.imageCard, img);
     }
 
@@ -77,6 +92,10 @@ export class Card extends Component<IProduct>{
 
     set category (category: string) {
         this.categoryCard.textContent = category;
+    }
+
+    set description (description: string) {
+        this.setText(this.descriptionCard, description);
     }
 
     set _id(id) {

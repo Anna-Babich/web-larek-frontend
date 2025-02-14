@@ -13,11 +13,18 @@ export class ProductData implements IProductsData{
         this.events = events;
     }
 
+    setProducts(data: IProduct[]) {
+        this._products = data;
+        this.events.emit('data:changed', {_products: this._products});
+
+}
+
+
     // Запись массива товаров в класс
-    set product(products: IProduct[]) {
-        this._products = products;
-        this.events.emit('products:changed')
-    }
+    // set product(products: IProduct[]) {
+    //     this._products = products;
+    //     this.events.emit('products:changed')
+    // }
 
     // Чтение всего массива товаров
     get product () {
@@ -25,12 +32,11 @@ export class ProductData implements IProductsData{
     }
 
     // Получение полной информации по товару через id
-    getProduct(productId: string) {
-        console.log(productId);
-        
+    getProduct(productId: string): IProduct {
         return this._products.find((item) => {
-            console.log(item);
-            item._id === productId
+            if(item.id === productId) {
+                return item.id;
+            }
         });
     }
 
@@ -48,11 +54,11 @@ export class ProductData implements IProductsData{
     }
 
     deleteProductBasket(productId: string): void {
-        this._basket = this._basket.filter(card => card._id !== productId);
+        this._basket = this._basket.filter(card => card.id !== productId);
         this.events.emit('products:changed');
     }
 
-    set preview(cardId: string | null) {
+    setPreview(cardId: string | null) {
         if (!cardId) {
             this._preview = null;
             return;

@@ -2,21 +2,23 @@ import './scss/styles.scss';
 import {EventEmitter, IEvents} from '../src/components/base/events';
 import {ProductData} from './components/ProductsData';
 import {UserData} from './components/UserData';
-import {IApi} from './types';
+import {IApi, IProduct} from './types';
 import {AppApi} from './components/AppAPI';
 import {Api} from './components/base/api';
-import {API_URL, settings} from './utils/constants';
+import {CDN_URL, API_URL, settings} from './utils/constants';
 import {Card} from './components/Card';
 import {ensureElement, cloneTemplate} from './utils/utils';
-import {CardsContainer} from './components/cardsContainer';
+import {CardsContainer} from './components/CardsContainer';
+import {Modal} from './components/Modal';
 
 const events = new EventEmitter();
 
 const productData = new ProductData(events);
 const userData = new UserData(events);
-
-const baseApi: IApi = new Api(API_URL, settings);
-const api = new AppApi(baseApi);
+const modalContainer = document.querySelector('.modal') as HTMLElement;
+// const baseApi: IApi = new Api(API_URL, settings);
+const api = new AppApi(CDN_URL, API_URL, settings);
+const modal = new Modal(modalContainer, events);
 
 
 // const ListProductTest = [
@@ -50,7 +52,7 @@ const api = new AppApi(baseApi);
 //     "price": 2500
 //     }]
 
-// productData.product = ListProductTest;
+// productData.setProducts(ListProductTest);
 
 const UserTest = {
     "payment": "online",
@@ -134,6 +136,7 @@ const cardTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardsContainer = new CardsContainer(document.querySelector('.gallery'));
 
 
+const cardPreview = ensureElement<HTMLTemplateElement>('#card-preview');
 
 const cardTest = ensureElement<HTMLTemplateElement>('#card-preview');
 const bassketTest = ensureElement<HTMLTemplateElement>('#card-basket');
@@ -150,20 +153,17 @@ const bassketTest = ensureElement<HTMLTemplateElement>('#card-basket');
 // gallery.prepend(card.render(productData.product[2]));
 
 
-
+// Работает
 api.getProducts()
-    .then((data: any) => {
-            productData.product = data.items;
+    .then((items: any) => {
+            productData.setProducts(items);
             events.emit('initialData:loaded'); 
-            console.log(data);
-        
     })
     .catch((err: any) => {
         console.error(err);
     });
 
 events.on('initialData:loaded', () => {
-    console.log(productData.product);
         const cardsArray = productData.product.map((card) => {
         const cardInstant = new Card(cloneTemplate(cardTemplate), events);
         return cardInstant.render(card);
@@ -171,4 +171,28 @@ events.on('initialData:loaded', () => {
 
     cardsContainer.render({catalog: cardsArray});
 
+})
+
+// getProduct(productId: string): IProduct {
+//     return this._products.find((item) => {
+//         item.id === productId
+//     });
+// }
+
+
+events.on('card:select', (data: HTMLElement) => {
+    
+    // console.log(productData._products);
+    console.log(productData.getProduct(data.id));
+    // test = productData.getProduct(data.id);
+    const cardModal = new Card(cloneTemplate(ensureElement<HTMLTemplateElement>('#card-preview')), events)
+    
+    modal.render({
+        content:  cardModal.render(productData.getProduct(data.id))
+    });
+   
+})
+
+events.on('modal:close', () => {
+    modal.close();
 })

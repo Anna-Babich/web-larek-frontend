@@ -1,5 +1,5 @@
 export interface IProduct {
-    _id: string;
+    id: string;
     description: string;
     image: string;
     title: string;
@@ -36,9 +36,9 @@ export interface IUserData {
 export type TFormErrors = Partial<Record<keyof TForm, string>>;
 
 
-export type TProductPage = Pick<IProduct, '_id' | 'title' | 'category' | 'image' | 'price'>;
+export type TProductPage = Pick<IProduct, 'id' | 'title' | 'category' | 'image' | 'price'>;
 export type TProductModal = Pick<IProduct, 'description' | 'image' | 'title' | 'category' | 'price'>;
-export type TBasket = Pick<IProduct, '_id' | 'title' | 'price'>;
+export type TBasket = Pick<IProduct, 'id' | 'title' | 'price'>;
 
 export type TForm = Pick<IUser, 'address' | 'email' | 'phone'>;
 export type TFormPayment = Pick<IUser, 'payment' | 'address'>;
