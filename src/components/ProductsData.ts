@@ -11,6 +11,8 @@ export class ProductData implements IProductsData{
 
     constructor(events: IEvents) {
         this.events = events;
+
+        this._basket = [];
     }
 
     setProducts(data: IProduct[]) {
@@ -31,6 +33,10 @@ export class ProductData implements IProductsData{
         return this._products;
     }
 
+    getBasket () {
+        return this._basket;
+    }
+
     // Получение полной информации по товару через id
     getProduct(productId: string): IProduct {
         return this._products.find((item) => {
@@ -40,22 +46,27 @@ export class ProductData implements IProductsData{
         });
     }
 
-    getResult(arrayBasket: TBasket[]): number{
+    getResult(arrayBasket: any): number{
         let res: number = 0;
-        arrayBasket.forEach((item: TBasket) => {
+        arrayBasket.forEach((item: any) => {
             res = res + item.price;
         })
         return res;
     }
 
-    addProductBasket(product: TBasket): void {
-        this._basket.push(product);
-        this.events.emit('products:changed');
+   
+    addProductBasket(product: IProduct): void {
+        const {id, title, price} = product;
+        const obj = {id, title, price};
+        this._basket.push(obj);
+
+        this.events.emit('basket:changed');
+        
     }
 
     deleteProductBasket(productId: string): void {
         this._basket = this._basket.filter(card => card.id !== productId);
-        this.events.emit('products:changed');
+        this.events.emit('basket:open');
     }
 
     setPreview(cardId: string | null) {

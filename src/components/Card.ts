@@ -48,6 +48,7 @@ export class Card extends Component<IProduct>{
         if(this.container.classList.contains('card_full')) {
             this.cardButton.addEventListener('click', () => {
                 this.events.emit('product:buy', this)
+                
             })
         }
 
@@ -64,8 +65,12 @@ export class Card extends Component<IProduct>{
         }
     }
 
+    toggleButton(state: boolean) {
+		this.setDisabled(this.cardButton, state);
+	}
+
     render(data?: Partial<IProduct>): HTMLElement;
-	// render(cardData: Partial<IProduct>): HTMLElement;
+	render(cardData: Partial<IProduct>): HTMLElement;
 
 
     render (cardData: Partial<IProduct> | undefined) {

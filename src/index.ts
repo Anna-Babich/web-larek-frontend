@@ -10,6 +10,7 @@ import {Card} from './components/Card';
 import {ensureElement, cloneTemplate} from './utils/utils';
 import {CardsContainer} from './components/CardsContainer';
 import {Modal} from './components/Modal';
+import {Basket} from './components/Basket';
 
 const events = new EventEmitter();
 
@@ -133,8 +134,8 @@ events.onAll((event) => {
 
 const cardTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 
-const cardsContainer = new CardsContainer(document.querySelector('.gallery'));
-
+const cardsContainer = new CardsContainer(document.querySelector('.gallery'), events);
+const page = new CardsContainer(document.querySelector('.page'), events);
 
 const cardPreview = ensureElement<HTMLTemplateElement>('#card-preview');
 
@@ -168,7 +169,7 @@ events.on('initialData:loaded', () => {
         const cardInstant = new Card(cloneTemplate(cardTemplate), events);
         return cardInstant.render(card);
     });
-
+    
     cardsContainer.render({catalog: cardsArray});
 
 })
@@ -179,20 +180,68 @@ events.on('initialData:loaded', () => {
 //     });
 // }
 
-
+const cardModal = new Card(cloneTemplate(ensureElement<HTMLTemplateElement>('#card-preview')), events);
 events.on('card:select', (data: HTMLElement) => {
-    
-    // console.log(productData._products);
-    console.log(productData.getProduct(data.id));
-    // test = productData.getProduct(data.id);
-    const cardModal = new Card(cloneTemplate(ensureElement<HTMLTemplateElement>('#card-preview')), events)
-    
+
     modal.render({
         content:  cardModal.render(productData.getProduct(data.id))
     });
+
    
 })
 
+
+// Блокируем прокрутку страницы если открыта модалка
+events.on('modal:open', () => {
+    page.setLocked(true);
+});
+
+// ... и разблокируем
 events.on('modal:close', () => {
-    modal.close();
+    page.setLocked(false);
+});
+
+
+
+// Работа с корзиной
+const basket = new Basket(cloneTemplate(ensureElement<HTMLTemplateElement>('#basket')), events);
+events.on('basket:open', (data: HTMLElement) => {
+    const basketList = new CardsContainer(document.querySelector('.basket__list'), events);
+    const array = productData._basket.map((card) => {
+    const cardInstant = new Card(cloneTemplate(ensureElement<HTMLTemplateElement>('#card-basket')), events);
+    // console.log(card);
+    return cardInstant.render(card);
+});
+
+    basketList.render({catalog: array});
+    // console.log(array);
+    console.log(productData.getResult(productData._basket));
+    basket.price.textContent = `${productData.getResult(productData._basket)} синапсов`
+
+    page._counter.textContent = `${productData._basket.length}`
+
+    modal.render({
+        content:  basket.render()
+    });
+    
 })
+
+events.on('product:buy', (data: HTMLElement) => {;
+    const item = productData.getProduct(data.id);
+    // console.log(item);
+    productData.addProductBasket(item);
+
+
+})
+// ensureElement<HTMLTemplateElement>('#basket')
+// const cardBasket = new CardsContainer(document.querySelector('.basket__list'), events);
+events.on('basket:changed', () => {
+    
+    page._counter.textContent = `${productData._basket.length}`
+    cardModal.toggleButton(true)
+})
+
+events.on('basket:delete', (data: HTMLElement) => {
+    productData.deleteProductBasket(data.id);
+})
+
