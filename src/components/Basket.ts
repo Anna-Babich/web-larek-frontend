@@ -16,7 +16,7 @@ export class Basket extends Component<IBasket> {
     basketPrice: HTMLElement;
 
     basketItem: HTMLLIElement;
-    basketItemIndex: HTMLElement;
+    _basketItemIndex: HTMLElement;
     cardTitle: HTMLElement;
     cardPrice: HTMLElement;
     basketItemDelete: HTMLButtonElement;
@@ -32,8 +32,20 @@ export class Basket extends Component<IBasket> {
         this.basketPrice = this.container.querySelector('.basket__price');
         // ensureElement<HTMLElement>('.page__wrapper');
 
+        this._basketItemIndex = this.container.querySelector('.basket__item-index');
+
+}
 
 
+
+
+button (state: boolean) {
+    this.setDisabled(this.basketButton, state);
+}
+
+setIndex () {
+    return this._basketItemIndex.textContent = '3';
+    // this.setText(this._basketItemIndex, value);
 }
 
 get price () {

@@ -26,7 +26,7 @@ export class Card extends Component<IProduct>{
         super(container);
         this.events = events;
         
-        this.cardButton = this.container.querySelector('.button');
+        this.cardButton = this.container.querySelector('.card__button');
         this.basketButton = this.container.querySelector('.basket__button');
         this.btnDeleteInBasket = this.container.querySelector('.basket__item-delete');
 
@@ -39,6 +39,9 @@ export class Card extends Component<IProduct>{
         this.basketIndex = this.container.querySelector('.basket__item-index');
 
 
+        this.basketIndex = this.container.querySelector('.basket__item-index');
+
+
         if(this.container.classList.contains('gallery__item')){
             this.container.addEventListener('click', () => {
                 this.events.emit('card:select', this)
@@ -48,13 +51,15 @@ export class Card extends Component<IProduct>{
         if(this.container.classList.contains('card_full')) {
             this.cardButton.addEventListener('click', () => {
                 this.events.emit('product:buy', this)
-                
+                this.events.emit('button:block', this)
+                this.setDisabled(this.cardButton, true);
             })
         }
 
         if(this.container.classList.contains('basket')) {
             this.basketButton.addEventListener('click', () => {
                 this.events.emit('basket:buy')
+                this.setDisabled(this.basketButton, true);
             })
         }
 
@@ -65,19 +70,28 @@ export class Card extends Component<IProduct>{
         }
     }
 
+    
+
     toggleButton(state: boolean) {
 		this.setDisabled(this.cardButton, state);
 	}
 
+    button (state: boolean) {
+        this.setDisabled(this.basketButton, state);
+    }
+
     render(data?: Partial<IProduct>): HTMLElement;
-	render(cardData: Partial<IProduct>): HTMLElement;
+	render(cardData: Partial<IProduct>, index?: number): HTMLElement;
 
 
-    render (cardData: Partial<IProduct> | undefined) {
+    render (cardData: Partial<IProduct> | undefined, index?: number) {
         if(!cardData) return this.container;
 
         const{...allCardData} = cardData;
+        
         return super.render(allCardData);
+
+
         // Object.assign(this, allCardData);
         // return this.element;
     }

@@ -55,30 +55,30 @@ const modal = new Modal(modalContainer, events);
 
 // productData.setProducts(ListProductTest);
 
-const UserTest = {
-    "payment": "online",
-    "email": "test@test.ru",
-    "phone": "+71234567890",
-    "address": "Spb Vosstania 1",
-    "total": 2200,
-    "items": ["854cef69-976d-4c2a-a18c-2aa45046c390", "c101ab44-ed99-4a54-990d-47aa2bb4e7d9"]
-}
+// const UserTest = {
+//     "payment": "online",
+//     "email": "test@test.ru",
+//     "phone": "+71234567890",
+//     "address": "Spb Vosstania 1",
+//     "total": 2200,
+//     "items": ["854cef69-976d-4c2a-a18c-2aa45046c390", "c101ab44-ed99-4a54-990d-47aa2bb4e7d9"]
+// }
 
-const basketTest = [{
-    "id": "854cef69-976d-4c2a-a18c-2aa45046c390",
-    "title": "+1 час в сутках",
-    "price": 750 
-    },
-    {
-    "id": "c101ab44-ed99-4a54-990d-47aa2bb4e7d9",
-    "title": "HEX-леденец",
-    "price": 1450
-    },
-    {
-    "id": "412bcf81-7e75-4e70-bdb9-d3c73c9803b7",
-    "title": "Фреймворк куки судьбы",
-    "price": 2500
-    }];
+// const basketTest = [{
+//     "id": "854cef69-976d-4c2a-a18c-2aa45046c390",
+//     "title": "+1 час в сутках",
+//     "price": 750 
+//     },
+//     {
+//     "id": "c101ab44-ed99-4a54-990d-47aa2bb4e7d9",
+//     "title": "HEX-леденец",
+//     "price": 1450
+//     },
+//     {
+//     "id": "412bcf81-7e75-4e70-bdb9-d3c73c9803b7",
+//     "title": "Фреймворк куки судьбы",
+//     "price": 2500
+//     }];
 
 
 
@@ -182,13 +182,31 @@ events.on('initialData:loaded', () => {
 
 const cardModal = new Card(cloneTemplate(ensureElement<HTMLTemplateElement>('#card-preview')), events);
 events.on('card:select', (data: HTMLElement) => {
+    // productData.blockButton(data.id);
+
+
+    
+    
+
+    let boo = productData.blockButton(data.id);
+    if(boo === true) {cardModal.toggleButton(true) } else {cardModal.toggleButton(false) ;}
+    // if(!boo){
+    //     cardModal.toggleButton(false);
+    // }
 
     modal.render({
         content:  cardModal.render(productData.getProduct(data.id))
     });
-
-   
 })
+
+// events.on('button:block', (data: HTMLElement) => {
+//     // const id = cardModal.render(productData.getProduct(data.id));
+    
+//     // cardModal.toggleButton(true);
+//     modal.render({
+//         content:  cardModal.render(productData.getProduct(data.id))
+//     });
+// })
 
 
 // Блокируем прокрутку страницы если открыта модалка
@@ -206,18 +224,28 @@ events.on('modal:close', () => {
 // Работа с корзиной
 const basket = new Basket(cloneTemplate(ensureElement<HTMLTemplateElement>('#basket')), events);
 events.on('basket:open', (data: HTMLElement) => {
+    
+    if(productData._basket.length === 0) {
+        basket.button(true);
+    } else { 
+        basket.button(false);
+    }
+
     const basketList = new CardsContainer(document.querySelector('.basket__list'), events);
-    const array = productData._basket.map((card) => {
+    const array = productData._basket.map((card, index) => {
+        
     const cardInstant = new Card(cloneTemplate(ensureElement<HTMLTemplateElement>('#card-basket')), events);
-    // console.log(card);
-    return cardInstant.render(card);
-});
+    // const ind = basket.setIndex();
+    console.log(cardInstant)
+    console.log(index + 1);
+    return cardInstant.render(card, index);
 
+    });
+// });
+console.log(array)
     basketList.render({catalog: array});
-    // console.log(array);
-    console.log(productData.getResult(productData._basket));
+    
     basket.price.textContent = `${productData.getResult(productData._basket)} синапсов`
-
     page._counter.textContent = `${productData._basket.length}`
 
     modal.render({
@@ -228,17 +256,13 @@ events.on('basket:open', (data: HTMLElement) => {
 
 events.on('product:buy', (data: HTMLElement) => {;
     const item = productData.getProduct(data.id);
-    // console.log(item);
     productData.addProductBasket(item);
 
-
 })
-// ensureElement<HTMLTemplateElement>('#basket')
-// const cardBasket = new CardsContainer(document.querySelector('.basket__list'), events);
+
 events.on('basket:changed', () => {
-    
     page._counter.textContent = `${productData._basket.length}`
-    cardModal.toggleButton(true)
+  
 })
 
 events.on('basket:delete', (data: HTMLElement) => {

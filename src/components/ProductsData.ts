@@ -85,4 +85,42 @@ export class ProductData implements IProductsData{
         return this._preview;
     }
 
+    blockButton (idProduct: string): boolean {
+    const found = this._basket.find((item) => {
+        return item.id === idProduct;
+      });
+      return found ? true : false;
+      
+    //   console.log(found);
+    //   return ;
+    }
+
+    // blockButton (idProduct: string): boolean {
+    //     let x;
+    //     console.log(this._basket);
+        
+    //     this._basket.find((item) => {
+    //         console.log("айдипродукт");
+    //         console.log(idProduct);
+    //         x = (item.id === idProduct) ? true : false;
+    //         // if(item.id === idProduct) {
+    //         //     // console.log(item.id)
+    //         //     // console.log(idProduct);
+    //         //     let x = 1;
+    //         //     return x;
+    //         //     // this.events.emit('button:block');
+    //         // } else {
+    //         //     // console.log('нет в корзине')
+    //         //     let x = 0;
+    //         //     return x;
+    //         // }
+    //         // console.log(x);
+    //         if(x === true) {
+    //            return;
+    //         } 
+    //     })
+    //     return x;
+        
+        
+    // }
 }
