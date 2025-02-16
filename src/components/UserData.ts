@@ -4,12 +4,12 @@ import {IUserData, IUser, TFormErrors} from '../types/index'
 export class UserData implements IUserData {
     _order: IUser;
 
-    payment: string;
-    email: string;
-    phone: string;
-    address: string;
-    total: number;
-    items: string[];
+    _payment: string;
+    _email: string;
+    _phone: string;
+    _address: string;
+    _total: number;
+    _items: string[];
 
     formError: TFormErrors;
     events: IEvents;
@@ -19,56 +19,47 @@ export class UserData implements IUserData {
     }
 
     setUserData (): IUser {
-        // this._order.payment = this.payment;
-        // this._order.email = this.email;
-        // this._order.phone = this.phone;
-        // this._order.address = this.address;
-        // this._order.total = this.total;
-        // this._order.items = this.items;
-        // return this._order;
         return this._order = {
-            payment: this.payment,
-            email: this.email,
-            phone: this.phone,
-            address: this.address,
-            total: this.total,
-            items: this.items
+            payment: this._payment,
+            email: this._email,
+            phone: this._phone,
+            address: this._address,
+            total: this._total,
+            items: this._items
         }
     }
 
-    setPayment (data: string) {
-        this.payment = data;
+    set payment (data: string) {
+        this._payment = data;
     }
-    setAddress (data: string) {
-        this.address = data;
+    set address (data: string) {
+        this._address = data;
     }
-    setEmail (data: string) {
-        this.email = data;
+    set email (data: string) {
+        this._email = data;
     }
-    setPhone (data: string) {
-        this.phone = data;
+    set phone (data: string) {
+        this._phone = data;
     }
 
-    setTotal (data: number) {
+    set total (data: number) {
         // Берем данные из productData
-        this.total = data;
+        this._total = data;
     }
-    setItems (data: string[]) {
+    set items (data: string[]) {
         // Берем данные из productData
-        this.items = data;
+        this._items = data;
     }
-
-
 
     validateOrder() {
         const errors: typeof this.formError = {};
-        if (!this.email) {
+        if (!this._email) {
             errors.email = 'Необходимо указать email.';
         }
-        if (!this.phone) {
+        if (!this._phone) {
             errors.phone = 'Необходимо указать телефон.';
         }
-        if (!this.address) {
+        if (!this._address) {
             errors.address = 'Необходимо указать адрес.'
         }
         this.formError = errors;
@@ -76,8 +67,6 @@ export class UserData implements IUserData {
         return Object.keys(errors).length === 0;
     }
 }
-
-
 
 
 // payment: string;

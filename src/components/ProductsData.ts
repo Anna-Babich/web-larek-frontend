@@ -1,40 +1,27 @@
 import {IEvents} from './base/events';
-import {IProduct, IProductsData, TBasket, TProductModal, TProductPage} from '../types/index';
+import {IProduct, IProductsData, TBasket} from '../types/index';
 
 export class ProductData implements IProductsData{
     _products: IProduct[];
     _preview: string | null;
 
-    _page: TProductPage;
+    // _page: TProductPage;
     _basket: TBasket[];
     events: IEvents;
 
     constructor(events: IEvents) {
         this.events = events;
-
-        this._basket = [];
+         this._basket = [];
     }
-
-    setProducts(data: IProduct[]) {
-        this._products = data;
-        this.events.emit('data:changed', {_products: this._products});
-
-}
-
-
-    // Запись массива товаров в класс
-    // set product(products: IProduct[]) {
-    //     this._products = products;
-    //     this.events.emit('products:changed')
-    // }
 
     // Чтение всего массива товаров
     get product () {
         return this._products;
     }
 
-    getBasket () {
-        return this._basket;
+    setProducts(data: IProduct[]) {
+        this._products = data;
+        this.events.emit('data:changed', {_products: this._products});
     }
 
     // Получение полной информации по товару через id
@@ -46,7 +33,7 @@ export class ProductData implements IProductsData{
         });
     }
 
-    getResult(arrayBasket: any): number{
+    getResult(arrayBasket: TBasket[]): number{
         let res: number = 0;
         arrayBasket.forEach((item: any) => {
             res = res + item.price;
@@ -59,9 +46,7 @@ export class ProductData implements IProductsData{
         const {id, title, price} = product;
         const obj = {id, title, price};
         this._basket.push(obj);
-
-        this.events.emit('basket:changed');
-        
+        this.events.emit('basket:changed'); 
     }
 
     deleteProductBasket(productId: string): void {
@@ -81,46 +66,25 @@ export class ProductData implements IProductsData{
         }
     }
 
-    get preview () {
-        return this._preview;
-    }
-
     blockButton (idProduct: string): boolean {
-    const found = this._basket.find((item) => {
-        return item.id === idProduct;
-      });
-      return found ? true : false;
-      
-    //   console.log(found);
-    //   return ;
+        const found = this._basket.find((item) => {
+            return item.id === idProduct;
+        });
+        return found ? true : false;
     }
-
-    // blockButton (idProduct: string): boolean {
-    //     let x;
-    //     console.log(this._basket);
-        
-    //     this._basket.find((item) => {
-    //         console.log("айдипродукт");
-    //         console.log(idProduct);
-    //         x = (item.id === idProduct) ? true : false;
-    //         // if(item.id === idProduct) {
-    //         //     // console.log(item.id)
-    //         //     // console.log(idProduct);
-    //         //     let x = 1;
-    //         //     return x;
-    //         //     // this.events.emit('button:block');
-    //         // } else {
-    //         //     // console.log('нет в корзине')
-    //         //     let x = 0;
-    //         //     return x;
-    //         // }
-    //         // console.log(x);
-    //         if(x === true) {
-    //            return;
-    //         } 
-    //     })
-    //     return x;
-        
-        
-    // }
 }
+
+
+// Запись массива товаров в класс
+    // set product(products: IProduct[]) {
+    //     this._products = products;
+    //     this.events.emit('products:changed')
+    // }
+
+    // getBasket () {
+    //     return this._basket;
+    // }
+
+    // get preview () {
+    //     return this._preview;
+    // }

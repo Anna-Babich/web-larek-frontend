@@ -173,9 +173,9 @@ const basket = new Basket(cloneTemplate(ensureElement<HTMLTemplateElement>('#bas
 events.on('basket:open', (data: HTMLElement) => {
     
     if(productData._basket.length === 0) {
-        basket.button(true);
+        basket.buttonToggle(true);
     } else { 
-        basket.button(false);
+        basket.buttonToggle(false);
     }
 
     const basketList = new CardsContainer(document.querySelector('.basket__list'), events);
@@ -185,7 +185,7 @@ events.on('basket:open', (data: HTMLElement) => {
     // const ind = basket.setIndex();
     console.log(cardInstant)
     console.log(index + 1);
-    return cardInstant.render(card, index);
+    return cardInstant.render(card);
 
     });
 
@@ -214,8 +214,8 @@ events.on('basket:delete', (data: HTMLElement) => {
 })
 
 // Изменение счетчика корзины на главной странице
-events.on('basket:changed', () => {
-    page._counter.textContent = `${productData._basket.length}`
+events.on('basket:changed', (data: HTMLElement) => {
+    page._counter.textContent = `${productData._basket.length}`;
 })
 
 

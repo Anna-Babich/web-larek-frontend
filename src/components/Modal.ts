@@ -60,13 +60,3 @@ export class Modal <IModal> extends Component<IModal> {
         return this.container;
     }
 }
-
-
-// <!-- <div class="modal" id="modal-container">
-// 		<div class="modal__container">
-// 			<button class="modal__close" aria-label="закрыть"></button>
-// 			<div class="modal__content">
-
-// 			</div>
-// 		</div>
-// 	</div> -->

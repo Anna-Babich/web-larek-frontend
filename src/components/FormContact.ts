@@ -1,4 +1,4 @@
-import {IProduct, TFormPayment, TFormContact} from '../types/index';
+import {IProduct, TFormContact} from '../types/index';
 // import { cloneTemplate } from '../utils/utils';
 import {IEvents} from './base/events';
 import {Component} from './base/Component';

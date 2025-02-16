@@ -1,5 +1,5 @@
 import {Component} from "./base/Component";
-import {IProduct, TBasket, TBasketData} from "../types";
+import {IProduct, TBasket} from "../types";
 import {IEvents} from "./base/events";
 import {ensureElement, createElement} from "../utils/utils";
 
@@ -14,14 +14,13 @@ export class Basket extends Component<IBasket> {
     basketList: HTMLElement;
     basketButton: HTMLButtonElement;
     basketPrice: HTMLElement;
-
-    basketItem: HTMLLIElement;
     _basketItemIndex: HTMLElement;
-    cardTitle: HTMLElement;
-    cardPrice: HTMLElement;
-    basketItemDelete: HTMLButtonElement;
-    
 
+    // basketItem: HTMLLIElement;
+    // cardTitle: HTMLElement;
+    // cardPrice: HTMLElement;
+    // basketItemDelete: HTMLButtonElement;
+    
     constructor(protected container: HTMLElement, events: IEvents) {
         super(container);
         this.events = events;
@@ -30,42 +29,25 @@ export class Basket extends Component<IBasket> {
         this.basketList = this.container.querySelector('.basket__list');
         this.basketButton = this.container.querySelector('.basket__button');
         this.basketPrice = this.container.querySelector('.basket__price');
-        // ensureElement<HTMLElement>('.page__wrapper');
-
         this._basketItemIndex = this.container.querySelector('.basket__item-index');
-
 
         this.basketButton.addEventListener('click', () => {
             this.events.emit('open:order')
         })
-}
-
-
-
-
-button (state: boolean) {
-    this.setDisabled(this.basketButton, state);
-}
-
-setIndex () {
-    return this._basketItemIndex.textContent = '3';
-    // this.setText(this._basketItemIndex, value);
-}
-
-get price () {
-    return this.basketPrice;
-}
-
-set items(items: HTMLElement[]) {
-    if (items.length) {
-        this.basketList.replaceChildren(...items);
-    } else {
-        this.basketList.replaceChildren(createElement<HTMLParagraphElement>('p', {
-            textContent: 'Корзина пуста'
-        }));
     }
-  }
+
+    get price () {
+        return this.basketPrice;
+    }
+    buttonToggle (state: boolean) {
+        this.setDisabled(this.basketButton, state);
+    }
+
+    setIndex () {
+        return this._basketItemIndex.textContent = '3';
+    }
 }
+
 
 // <template id="card-basket">
 // 		<li class="basket__item card card_compact">

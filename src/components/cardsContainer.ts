@@ -13,7 +13,6 @@ export class CardsContainer extends Component<ICardContainer> {
     _basket: HTMLElement;
 
     events: IEvents;
-    // container: HTMLElement;
 
     constructor (protected container: HTMLElement, events: IEvents) {
         super(container);
@@ -40,9 +39,4 @@ export class CardsContainer extends Component<ICardContainer> {
             this._wrapper.classList.remove('page__wrapper_locked');
         }
     }
-
-    // render(data: Partial<ICardContainer>) {
-    //     Object.assign(this, data);
-    //     return this.container;
-    // }
 }

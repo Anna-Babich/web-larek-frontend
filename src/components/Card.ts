@@ -4,7 +4,7 @@ import {IEvents} from './base/events';
 import {Component} from './base/Component';
 
 export class Card extends Component<IProduct>{
-    element: HTMLElement;
+    // element: HTMLElement;
 
     basketButton: HTMLButtonElement;
     cardButton: HTMLButtonElement;
@@ -16,7 +16,7 @@ export class Card extends Component<IProduct>{
     categoryCard: HTMLElement;
     imageCard: HTMLImageElement;
     priceCard: HTMLElement;
-    basketIndex: HTMLElement;
+    // basketIndex: HTMLElement;
 
     idCard: string;
 
@@ -36,10 +36,7 @@ export class Card extends Component<IProduct>{
         this.categoryCard = this.container.querySelector('.card__category');
         this.imageCard = this.container.querySelector('.card__image');
         this.priceCard = this.container.querySelector('.card__price');
-        this.basketIndex = this.container.querySelector('.basket__item-index');
-
-
-        this.basketIndex = this.container.querySelector('.basket__item-index');
+        // this.basketIndex = this.container.querySelector('.basket__item-index');
 
 
         if(this.container.classList.contains('gallery__item')){
@@ -59,7 +56,7 @@ export class Card extends Component<IProduct>{
         if(this.container.classList.contains('basket')) {
             this.basketButton.addEventListener('click', () => {
                 this.events.emit('basket:buy')
-                this.setDisabled(this.basketButton, true);
+                // this.setDisabled(this.basketButton, true);
             })
         }
 
@@ -70,30 +67,13 @@ export class Card extends Component<IProduct>{
         }
     }
 
-    
-
-    toggleButton(state: boolean) {
-		this.setDisabled(this.cardButton, state);
-	}
-
-    button (state: boolean) {
-        this.setDisabled(this.basketButton, state);
-    }
-
     render(data?: Partial<IProduct>): HTMLElement;
-	render(cardData: Partial<IProduct>, index?: number): HTMLElement;
+	render(cardData: Partial<IProduct>): HTMLElement;
 
-
-    render (cardData: Partial<IProduct> | undefined, index?: number) {
+    render (cardData: Partial<IProduct> | undefined) {
         if(!cardData) return this.container;
-
         const{...allCardData} = cardData;
-        
         return super.render(allCardData);
-
-
-        // Object.assign(this, allCardData);
-        // return this.element;
     }
 
     set price (price: number) {
@@ -101,7 +81,6 @@ export class Card extends Component<IProduct>{
     }
 
     set image (img: string) {
-        // this.imageCard.setAttribute('src', `${img}`);
         this.setImage(this.imageCard, img);
     }
 
@@ -124,7 +103,9 @@ export class Card extends Component<IProduct>{
 		return this.idCard;
 	}
 
-    
+    toggleButton(state: boolean) {
+		this.setDisabled(this.cardButton, state);
+	}
    
 }
 
@@ -160,30 +141,3 @@ export class Card extends Component<IProduct>{
 // 			<span class="card__price">750 синапсов</span>
 // 		</button>
 // 	</template>
-
-
-
-// Отвечает за отображение карточки товара на главной странице, задавая в карточке данные названия, категории, изображения и цены.\
-// Поля класса содержат элементы разметки элементов карточки:
-// ```
-// element: HTMLElement;
-
-// buttonCard: HTMLButtonElement;
-// titleCard: HTMLElement;
-// categoryCard: HTMLElement;
-// imageCard: HTMLElement;
-// priceCard: HTMLElement;
-// idCard: string;
-
-// events: IEvents;
-// ```
-// В конструктор класса передается DOM элемент темплейта.\
-// Также конструктор принимает экземпляр `EventEmitter` для инициации событий.\
-// В классе устанавливаются слушатели на все интерактивные элементы, в результате взаимодействия с которыми пользователя генерируются соответствующие события.
-// ```
-// constructor(template: HTMLElementTemplate, events: IEvents)
-// ```
-// Методы:
-// - render(cardData: Partial<TProductPage>): HTMLElement - метод отвечает за выведение разметки карточки товара на главную страницу сайта. Детально: заполняет атрибуты элементов карточки данными, возвращает разметку карточки с установленными слушателями. Слушатель устанавливается на элемент карточки и генерируют соответствующие события через экземпляр брокера событий. Что позволит открыть конкретный товар в модальном окне.
-
-// - геттер _id возвращает уникальный id карточки
