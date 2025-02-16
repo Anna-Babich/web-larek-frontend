@@ -11,16 +11,20 @@ import {ensureElement, cloneTemplate} from './utils/utils';
 import {CardsContainer} from './components/CardsContainer';
 import {Modal} from './components/Modal';
 import {Basket} from './components/Basket';
+import {FormPayment} from './components/FormPayment'
+import {FormContacts} from './components/FormContact';
+import {Success} from './components/Success';
 
 const events = new EventEmitter();
-
 const productData = new ProductData(events);
 const userData = new UserData(events);
 const modalContainer = document.querySelector('.modal') as HTMLElement;
-// const baseApi: IApi = new Api(API_URL, settings);
 const api = new AppApi(CDN_URL, API_URL, settings);
 const modal = new Modal(modalContainer, events);
 
+events.onAll((event) => {
+    console.log(event.eventName, event.data);
+})
 
 // const ListProductTest = [
 //     {
@@ -126,35 +130,11 @@ const modal = new Modal(modalContainer, events);
 
 // console.log(userData._order);
 
-events.onAll((event) => {
-    console.log(event.eventName, event.data);
-})
-
-
-
 const cardTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
-
 const cardsContainer = new CardsContainer(document.querySelector('.gallery'), events);
 const page = new CardsContainer(document.querySelector('.page'), events);
 
-const cardPreview = ensureElement<HTMLTemplateElement>('#card-preview');
-
-const cardTest = ensureElement<HTMLTemplateElement>('#card-preview');
-const bassketTest = ensureElement<HTMLTemplateElement>('#card-basket');
-
-// const gallery = document.querySelector('.gallery');
-
-// const card = new Card(cloneTemplate(cardTemplate), events);
-// const card1 = new Card(cloneTemplate(cardTemplate), events);
-// const cardArray: HTMLElement[] = [];
-// cardArray.push(card.render(ListProductTest[1]));
-// cardArray.push(card1.render(ListProductTest[2]));
-// cardsContainer.render({catalog: cardArray});
-
-// gallery.prepend(card.render(productData.product[2]));
-
-
-// Работает
+// Запрос на сервер для получения товаров
 api.getProducts()
     .then((items: any) => {
             productData.setProducts(items);
@@ -169,25 +149,13 @@ events.on('initialData:loaded', () => {
         const cardInstant = new Card(cloneTemplate(cardTemplate), events);
         return cardInstant.render(card);
     });
-    
     cardsContainer.render({catalog: cardsArray});
-
 })
 
-// getProduct(productId: string): IProduct {
-//     return this._products.find((item) => {
-//         item.id === productId
-//     });
-// }
 
 const cardModal = new Card(cloneTemplate(ensureElement<HTMLTemplateElement>('#card-preview')), events);
 events.on('card:select', (data: HTMLElement) => {
     // productData.blockButton(data.id);
-
-
-    
-    
-
     let boo = productData.blockButton(data.id);
     if(boo === true) {cardModal.toggleButton(true) } else {cardModal.toggleButton(false) ;}
     // if(!boo){
@@ -198,27 +166,6 @@ events.on('card:select', (data: HTMLElement) => {
         content:  cardModal.render(productData.getProduct(data.id))
     });
 })
-
-// events.on('button:block', (data: HTMLElement) => {
-//     // const id = cardModal.render(productData.getProduct(data.id));
-    
-//     // cardModal.toggleButton(true);
-//     modal.render({
-//         content:  cardModal.render(productData.getProduct(data.id))
-//     });
-// })
-
-
-// Блокируем прокрутку страницы если открыта модалка
-events.on('modal:open', () => {
-    page.setLocked(true);
-});
-
-// ... и разблокируем
-events.on('modal:close', () => {
-    page.setLocked(false);
-});
-
 
 
 // Работа с корзиной
@@ -241,8 +188,8 @@ events.on('basket:open', (data: HTMLElement) => {
     return cardInstant.render(card, index);
 
     });
-// });
-console.log(array)
+
+
     basketList.render({catalog: array});
     
     basket.price.textContent = `${productData.getResult(productData._basket)} синапсов`
@@ -254,18 +201,56 @@ console.log(array)
     
 })
 
+// Добавление товара в корзину
 events.on('product:buy', (data: HTMLElement) => {;
     const item = productData.getProduct(data.id);
     productData.addProductBasket(item);
 
 })
 
-events.on('basket:changed', () => {
-    page._counter.textContent = `${productData._basket.length}`
-  
-})
-
+// Удаление товара из корзины
 events.on('basket:delete', (data: HTMLElement) => {
     productData.deleteProductBasket(data.id);
 })
 
+// Изменение счетчика корзины на главной странице
+events.on('basket:changed', () => {
+    page._counter.textContent = `${productData._basket.length}`
+})
+
+
+// Форма оплаты
+const formPayment = new FormPayment(cloneTemplate(ensureElement<HTMLTemplateElement>('#order')), events)
+events.on('open:order', () => {
+
+    modal.render({content: formPayment.render()});
+})
+
+// Форма контактов
+const formContacts = new FormContacts(cloneTemplate(ensureElement<HTMLTemplateElement>('#contacts')), events)
+events.on('contacts:open', () => {
+    modal.render({content: formContacts.render()});
+})
+
+// окно успешной покупки
+const success = new Success(cloneTemplate(ensureElement<HTMLTemplateElement>('#success')), events)
+events.on('success:open', () => {
+    modal.render({content: success.render()});
+})
+
+// закрыть окно успешной покупки
+events.on('success:close', () => {
+    modal.close();
+})
+
+
+
+// Блокируем прокрутку страницы если открыта модалка
+events.on('modal:open', () => {
+    page.setLocked(true);
+});
+
+// ... и разблокируем
+events.on('modal:close', () => {
+    page.setLocked(false);
+});

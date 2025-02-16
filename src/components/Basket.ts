@@ -34,6 +34,10 @@ export class Basket extends Component<IBasket> {
 
         this._basketItemIndex = this.container.querySelector('.basket__item-index');
 
+
+        this.basketButton.addEventListener('click', () => {
+            this.events.emit('open:order')
+        })
 }
 
 
