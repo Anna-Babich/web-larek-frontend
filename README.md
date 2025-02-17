@@ -250,42 +250,33 @@ constructor(template: HTMLElementTemplate, events: IEvents)
 - геттер _id возвращает уникальный id карточки
 
 #### Класс Basket
-
 Класс корзины. Отвечает за выведение разметки корзины.\
-
 Имеет поля:
-```
-basketList: HTMLUListElement; - список товаров в корзине
-basketItem: HTMLLIElement; - отдельный товар в корзине
-basketItemIndex: HTMLElement; - порядковый номер отдельного товара в корзине
-cardTitle: HTMLElement; - наименование отдельного товара в корзине
-cardPrice: HTMLElement; - цена отдельного товара в корзине
-basketItemDelete: HTMLButtonElement; - кнопка удаления отдельного товара из корзины
-
-basketButton: HTMLButtonElement; - кнопка для оформления заказа
-basketPrice: HTMLElement; - общая стоимость покупки
-```
-
-В конструктор класса передается DOM элемент темплейта.
-Также конструктор принимает экземпляр EventEmitter для инициации событий.
+ - events: IEvents - экземпляр класса `EventEmitter` для инициации событий при изменении данных
+ - basket: HTMLElement - 
+ - basketList: HTMLUListElement; - список товаров в корзине
+ - _basketItemIndex: HTMLElement; - порядковый номер отдельного товара в корзине
+ - basketButton: HTMLButtonElement; - кнопка для оформления заказа
+ - basketPrice: HTMLElement; - общая стоимость покупки
 
 В классе устанавливаются слушатели на все интерактивные элементы, в результате взаимодействия с которыми пользователя генерируются соответствующие события.
+Конструктор:
 ```
-constructor(template: HTMLElementTemplate, events: IEvents)
+constructor(protected container: HTMLElement, events: IEvents)
 ```
-
 Методы:
-
+ - get price () - получение стоимости
+ - buttonToggle (state: boolean) - блокировка кнопки
 
 #### Класс Form
 При сабмите инициирует событие передавая в него объект с данными из полей ввода формы. При изменении данных в полях ввода инициирует событие изменения данных. Предоставляет методы для отображения ошибок и управления активностью кнопки сохранения
 
 Поля класса содержат элементы разметки форм:
-```
-formElement: HTMLFormElement;
-inputElement: HTMLInputElement;
+ - events: IEvents - экземпляр класса `EventEmitter` для инициации событий при изменении данных
+ - formElement: HTMLFormElement;
+ - inputElement: HTMLInputElement;
 
-```
+
 В конструктор класса передается DOM элемент темплейта.\
 ```
 constructor(formElement: HTMLFormElement, handleFormSubmit: function)
@@ -298,52 +289,53 @@ constructor(formElement: HTMLFormElement, handleFormSubmit: function)
  - clearValue(formElement: HTMLFormElement) - очищает форму
 
 #### Класс FormPayment
-Данный класс расширяет класс Form. И предназначен для реализации формы для выбора способа оплаты и адреса доставки.\
+Данный класс расширяет класс Form.\
+И предназначен для реализации формы для выбора способа оплаты и адреса доставки.\
 Поля класса:
-```
-order: HTMLElementTemplate;
-formOrder: HTMLFormElement;
-buttonPaymentOnline: HTMLButtonElement - кнопка для выбора способа оплаты (онлайн)
-buttonPaymentCash: HTMLButtonElement - кнопка для выбора способа оплаты (при получении)
-inputAddress: HTMLInputElement - инпут для ввода пользователем адреса
-orderButton: HTMLButtonElement - кнопка для сабмита данных
+ - events: IEvents - экземпляр класса `EventEmitter` для инициации событий при изменении данных
+ - order: HTMLFormElement;
+ - buttonPaymentOnline: HTMLButtonElement - кнопка для выбора способа оплаты (онлайн)
+ - buttonPaymentCash: HTMLButtonElement - кнопка для выбора способа оплаты (при получении)
+ - inputAddress: HTMLInputElement - инпут для ввода пользователем адреса
+ - orderButton: HTMLButtonElement - кнопка для сабмита данных
 
-```
 Конструктор:
 ```
-constructor(template: HTMLElementTemplate, events: IEvents)
+constructor(protected container: HTMLElement, events: IEvents)
 ```
 Методы:
+ - 
+ - 
 
 
 #### Класс FormContact
-Данный класс расширяет класс Form. Предназначен для реализации формы для ввода данных пользователя: почты и телефона.\
+Данный класс расширяет класс Form.\
+Предназначен для реализации формы для ввода данных пользователя: почты и телефона.\
 Поля класса:
-```
-contacts: HTMLElementTemplate;
-formContacts: HTMLFormElement;
-inputEmail: HTMLInputElement - инпут для ввода пользователем email
-inputPhone: HTMLInputElement - инпут для ввода пользователем телефона 
-```
+ - events: IEvents - экземпляр класса `EventEmitter` для инициации событий при изменении данных
+ - formContacts: HTMLFormElement
+ - inputEmail: HTMLInputElement - инпут для ввода пользователем email
+ - inputPhone: HTMLInputElement - инпут для ввода пользователем телефона 
+ - buttonContacts: HTMLButtonElement;
+
 Конструктор:
 ```
-constructor(template: HTMLElementTemplate, events: IEvents)
+constructor(protected container: HTMLElement, events: IEvents)
 ```
 Методы:
+ -
+ -
 
 #### Класс SuccessOrder
 Данный класс формирует разметку сообщения об успешном создании заказа.
 Поля:
-```
-success: HTMLElementTemplate; - темплейт разметки сообщения об успешном завершении создания заказа
-orderSuccess: HTMLElement;
-orderSuccessTitle: HTMLElement;
-orderSuccessDescription: HTMLElement; - общая стоимость списанных синапсов
-orderSuccessButton: HTMLButtonElement; - кнопка для закртия окна
-```
+ - events: IEvents - экземпляр класса `EventEmitter` для инициации событий при изменении данных
+ - successClose: HTMLButtonElement - кнопка для закртия окна
+ - successDescription: HTMLElement - общая стоимость списанных синапсов
+
 Конструктор:
 ```
-constructor(template: HTMLElementTemplate, events: IEvents)
+constructor(protected container: HTMLElement, events: IEvents)
 ```
 ### Слой коммуникации
 
@@ -353,30 +345,30 @@ constructor(template: HTMLElementTemplate, events: IEvents)
 В `index.ts` сначала создаются экземпляры всех необходимых классов, а затем настраивается обработка событий.
 
 
-
-!!! Пример из места, заменить!!!
 *Список всех событий, которые могут генерироваться в системе:*\
 *События изменения данных (генерируются классами моделями данных)*
+- `initialData:loaded` - массив товаров прибыл
+- `data:changed` - изменение массива товаров
+- `basket:changed` - изменен массив корзины
+- `product:selected` - изменение в превью
 - `user:changed` - изменение данных пользователя
-- `cards:changed` - изменение массива карточек
-- `card:selected` - изменение открываемой в модальном окне картинки карточки
-- `card:previewClear` - необходима очистка данных выбранной для показа в модальном окне карточки
 
 *События, возникающие при взаимодействии пользователя с интерфейсом (генерируются классами, отвечающими за представление)*
-- `userEdit:open` - открытие модального окна с формой редактирования данных пользователя
-- `newCard:open` - открытие модального окна создания новой карточки
-- `avatar:open` - открытие модального окна с формой редактирования аватара пользователя
-- `card:select` - выбор карточки для отображения в модальном окне
-- `card:delete` - выбор карточки для удаления
-- `card:like` - изменение состояния лайка на карточке
-- `edit-profile:input` - изменение данных в форме с данными пользователя
-- `edit-avatar:input` - изменение данных в форме с аватаром пользователя
-- `new-place:input` - изменение данных в форме создания новой карточки
-- `edit-profile:submit` - сохранение данных пользователя в модальном окне
-- `edit-avatar:submit` - сохранение аватара пользователя в модальном окне
-- `new-place:submit` - событие, генерируемое при создании новой карточки в форме
-- `remove-card:submit` - событие, генерируемое при нажатии "Да" в форме подтверждения
-- `edit-profile:validation` - событие, сообщающее о необходимости валидации формы профиля
-- `edit-avatar:validation` - событие, сообщающее о необходимости валидации формы аватара пользователя
-- `new-place:validation` - событие, сообщающее о необходимости валидации формы создания новой карточки
+- `card:select` - открытие модального окна с товаром
+- `basket:open` - открытие моджального окна с корзиной
+- `product:buy` - генерируется при нажатии у товара кнопки "В Корзину"
+- `basket:delete` - генерируется при нажатии кнопки удаления в моодальном окне корзины
+- `open:order` - открытие модального окна с формой оплаты
+- `contacts:open` - открытие модального окна с формой контактов
+- `success:open` - открытие модального окна при удачной покупке
+- `success:close` - генерируется при нажатии кнопки в модальном окне удачной покупки
+ 
+- `modal:open` - состояние открытого модального окна
+- `modal:close` -  состояние закрытого модального окна
+
+  
+????? - `basket:buy` -
+???? - `button:block` -
+
+
 
