@@ -16,7 +16,7 @@ export class Card extends Component<IProduct>{
     categoryCard: HTMLElement;
     imageCard: HTMLImageElement;
     priceCard: HTMLElement;
-    // basketIndex: HTMLElement;
+    basketIndex: HTMLElement;
 
     idCard: string;
 
@@ -36,7 +36,7 @@ export class Card extends Component<IProduct>{
         this.categoryCard = this.container.querySelector('.card__category');
         this.imageCard = this.container.querySelector('.card__image');
         this.priceCard = this.container.querySelector('.card__price');
-        // this.basketIndex = this.container.querySelector('.basket__item-index');
+        this.basketIndex = this.container.querySelector('.basket__item-index');
 
 
         if(this.container.classList.contains('gallery__item')){
@@ -107,6 +107,9 @@ export class Card extends Component<IProduct>{
 		this.setDisabled(this.cardButton, state);
 	}
    
+    set index(index: number) {
+		this.basketIndex.textContent = String(index + 1);
+	}
 }
 
 // <template id="card-preview">

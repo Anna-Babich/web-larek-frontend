@@ -8,7 +8,7 @@ import {Api} from './components/base/api';
 import {CDN_URL, API_URL, settings} from './utils/constants';
 import {Card} from './components/Card';
 import {ensureElement, cloneTemplate} from './utils/utils';
-import {CardsContainer} from './components/CardsContainer';
+import {CardsContainer} from './components/cardsContainer';
 import {Modal} from './components/Modal';
 import {Basket} from './components/Basket';
 import {FormPayment} from './components/FormPayment'
@@ -179,12 +179,13 @@ events.on('basket:open', (data: HTMLElement) => {
     }
 
     const basketList = new CardsContainer(document.querySelector('.basket__list'), events);
-    const array = productData._basket.map((card, index) => {
+    const array = productData._basket.map((card) => {
         
     const cardInstant = new Card(cloneTemplate(ensureElement<HTMLTemplateElement>('#card-basket')), events);
+    cardInstant.index = productData._basket.findIndex((cards) => cards.id === card.id)
     // const ind = basket.setIndex();
     console.log(cardInstant)
-    console.log(index + 1);
+    
     return cardInstant.render(card);
 
     });
