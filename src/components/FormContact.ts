@@ -2,26 +2,38 @@ import {IProduct, TFormContact} from '../types/index';
 // import { cloneTemplate } from '../utils/utils';
 import {IEvents} from './base/events';
 import {Component} from './base/Component';
+import {Form} from './Form';
+import {IFormState} from './Form';
 
-export class FormContacts extends Component<TFormContact> {
+export class FormContacts extends Form<IFormState> {
     events: IEvents;
 
     buttonContacts: HTMLButtonElement;
+    // input1: HTMLElement;
+    // input2: HTMLElement;
 
     constructor(protected container: HTMLElement, events: IEvents) {
-        super(container);
+        super(container, events);
         this.events = events;
 
-        
+        // this.input1 = this.container.querySelector('.form__input');
+        // this.input2 = this.container.querySelector('.form__input');
+
         this.buttonContacts = this.container.querySelector('.button');
-
-
         this.buttonContacts.addEventListener('click', () => {
-            this.events.emit('success:open')
+            this.events.emit('order:post')
         })
     }
 
+    set valid(value: boolean) {
+        console.log(value);
+        this.contactsButton.disabled = !value;
+    }
 
+    // clear () {
+    //     this.input1.textContent = '';
+    //     this.input2.textContent = '';
+    // }
 
 }
 
@@ -44,37 +56,3 @@ export class FormContacts extends Component<TFormContact> {
 // 			</div>
 // 		</form>
 // 	</template>
-
-// При сабмите инициирует событие передавая в него объект с данными из полей ввода формы. При изменении данных в полях ввода инициирует событие изменения данных. Предоставляет методы для отображения ошибок и управления активностью кнопки сохранения
-
-// Поля класса содержат элементы разметки форм:
-// ```
-// formElement: HTMLFormElement;
-// inputElement: HTMLInputElement;
-
-// ```
-// В конструктор класса передается DOM элемент темплейта.\
-// ```
-// constructor(formElement: HTMLFormElement, handleFormSubmit: function)
-// ```
-
-// Методы:
-//  - render() - выводит элемент формы для выведения на страницу
-//  - setValue(value: string) - позволяет заполнять форму
-//  - getValue() - возвращает значение из поля ввода
-//  - clearValue(formElement: HTMLFormElement) - очищает форму
-
-
-//  Данный класс расширяет класс Form. Предназначен для реализации формы для ввода данных пользователя: почты и телефона.\
-// Поля класса:
-// ```
-// contacts: HTMLElementTemplate;
-// formContacts: HTMLFormElement;
-// inputEmail: HTMLInputElement - инпут для ввода пользователем email
-// inputPhone: HTMLInputElement - инпут для ввода пользователем телефона 
-// ```
-// Конструктор:
-// ```
-// constructor(template: HTMLElementTemplate, events: IEvents)
-// ```
-// Методы:

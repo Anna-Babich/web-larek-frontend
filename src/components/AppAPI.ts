@@ -22,11 +22,3 @@ export class AppApi extends Api implements IApi{
 		return this.post(`/order`, data, 'POST').then((res: IUser) => res);
 	}
 }
-// getLotList(): Promise<ILot[]> {
-    //     return this.get('/lot').then((data: ApiListResponse<ILot>) =>
-    //         data.items.map((item) => ({
-    //             ...item,
-    //             image: this.cdn + item.image
-    //         }))
-    //     );
-    // }

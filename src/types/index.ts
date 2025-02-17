@@ -36,21 +36,22 @@ export interface IProductsData {
 export interface IUserData {
     _order: IUser;
 
-    setUserData (): IUser;
-    set payment (data: string)
-    set address (data: string)
-    set email (data: string)
-    set phone (data: string)
-    set total (data: number)
-    set items (data: string[])
-    validateOrder(): void
+    // setUserData (): IUser;
+    // set payment (data: string)
+    // set address (data: string)
+    // set email (data: string)
+    // set phone (data: string)
+    // set total (data: number)
+    // set items (data: string[])
+    
 }
 
 export type TFormErrors = Partial<Record<keyof TForm, string>>;
 export type TBasket = Pick<IProduct, 'id' | 'title' | 'price'>;
-export type TForm = Pick<IUser, 'address' | 'email' | 'phone'>;
+export type TForm = Pick<IUser, 'address' | 'email' | 'phone' | 'payment'>;
 export type TFormPayment = Pick<IUser, 'payment' | 'address'>;
 export type TFormContact = Pick<IUser, 'email' | 'phone'>;
+
 
 export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
 export interface IApi {

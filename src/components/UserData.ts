@@ -1,17 +1,25 @@
 import {IEvents} from './base/events';
-import {IUserData, IUser, TFormErrors} from '../types/index'
+import {IUserData, IUser, TFormErrors, TForm} from '../types/index'
 
 export class UserData implements IUserData {
-    _order: IUser;
+    _order: IUser = {
+        payment: '',
+        email: '',
+        phone: '',
+        address: '',
+        total: 0,
+        items: []
+    }
 
     _payment: string;
     _email: string;
     _phone: string;
-    _address: string;
+    address: string;
     _total: number;
     _items: string[];
 
-    formError: TFormErrors;
+    errorPayment: TFormErrors;
+    errorContacts: TFormErrors;
     events: IEvents;
 
     constructor(events: IEvents) {
@@ -23,24 +31,37 @@ export class UserData implements IUserData {
             payment: this._payment,
             email: this._email,
             phone: this._phone,
-            address: this._address,
+            address: this.address,
             total: this._total,
             items: this._items
         }
     }
 
-    set payment (data: string) {
-        this._payment = data;
+    // getPayment() {
+	// 	return this.payment;
+	// }
+
+    get _formError() {
+        return this.errorPayment;
     }
-    set address (data: string) {
-        this._address = data;
-    }
-    set email (data: string) {
-        this._email = data;
-    }
-    set phone (data: string) {
-        this._phone = data;
-    }
+
+setPayment(data: string) {
+    this._order.payment = data;
+}
+
+
+    // set payment (data: any) {
+    //     this._payment = data;
+    // }
+    // set _address (data: string) {
+    //     this.address = data;
+    // }
+    // set email (data: string) {
+    //     this._email = data;
+    // }
+    // set phone (data: string) {
+    //     this._phone = data;
+    // }
 
     set total (data: number) {
         // Берем данные из productData
@@ -51,36 +72,57 @@ export class UserData implements IUserData {
         this._items = data;
     }
 
-    validateOrder() {
-        const errors: typeof this.formError = {};
-        if (!this._email) {
-            errors.email = 'Необходимо указать email.';
+    setPaymentField(field: keyof TForm, value: string) {
+        console.log(value);
+        this._order[field] = value;
+
+        if (this.validatePayment()) {
+            console.log('успешно')
         }
-        if (!this._phone) {
-            errors.phone = 'Необходимо указать телефон.';
+    }
+
+    validatePayment() {
+        const errors: typeof this.errorPayment = {};
+        if (!this._order.address) {
+            errors.email = 'Необходимо указать адрес';
         }
-        if (!this._address) {
-            errors.address = 'Необходимо указать адрес.'
-        }
-        this.formError = errors;
-        this.events.emit('formError:change', this.formError);
+        this.errorPayment = errors;
+        this.events.emit('formP:change', this.errorPayment);
         return Object.keys(errors).length === 0;
     }
+ // для контактов
+    setContactsField(field: keyof TForm, value: string) {
+        console.log(value);
+        this._order[field] = value;
+
+        if (this.validationContacts()) {
+            this.events.emit('order:ready', this._order);
+
+        }
+    }
+
+    validationContacts() {
+        const errors: typeof this.errorContacts = {};
+        if (!this._order.email) {
+            errors.email = 'Необходимо указать email';
+        }
+        if(!this._order.phone) {
+            errors.phone = 'Необходимо указать телефон'
+        }
+        this.errorContacts = errors;
+        this.events.emit('formC:change', this.errorContacts);
+        return Object.keys(errors).length === 0;
+    }
+
+
+    clearForm() {
+        this._order = {
+            payment: '',
+            email: '',
+            phone: '',
+            address: '',
+            total: 0,
+            items: []
+        }
+    }
 }
-
-
-// payment: string;
-//     email: string;
-//     phone: string;
-//     address: string;
-//     total: number;
-//     items: string[];
-
-// - order: IUser; - заказ пользователя
-// - events: IEvents - экземпляр класса `EventEmitter` для инициации событий при изменении данных.
-
-// Так же класс предоставляет набор методов для взаимодействия с этими данными.
-//  - set order (data: IUserInfo); - сеттер, позволяет сохранять готовый массив
-//  - checkPaymentValidation(data: Record<keyof TFormPayment, string>): boolean;
-//  - checkContactValidation(data: Record<keyof TFormContact, string>): boolean;
-//  - а так же геттеры для получения данных из полей класса

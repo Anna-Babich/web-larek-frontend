@@ -1,82 +1,42 @@
-import {IProduct, TFormPayment} from '../types/index';
+import {IProduct, TFormPayment, TForm} from '../types/index';
 // import { cloneTemplate } from '../utils/utils';
 import {IEvents} from './base/events';
-import {Component} from './base/Component';
+import {Form} from './Form';
+import {IFormState} from './Form'
 
-export class FormPayment extends Component<TFormPayment> {
+
+export class FormPayment extends Form<IFormState> {
     events: IEvents;
 
-    order: HTMLElement;
-    buttonPaymentOnline: string;
-    buttonPaymentCash: string;
+    paymentBtn: NodeListOf<HTMLButtonElement>;
 
-    inputAddress: HTMLInputElement;
-    orderButton: HTMLButtonElement;
-
+    // input1: HTMLElement;
+    
     constructor(protected container: HTMLElement, events: IEvents) {
-        super(container);
+        super(container, events);
         this.events = events;
 
-        this.order = this.container.querySelector('.form');
+        // this.input1 = this.container.querySelector('.form__input')
 
-
-        
-        // this.buttonPaymentOnline = this.order.getAttribute('card');
-        // this.buttonPaymentCash = this.order.getAttribute('cash');
-
-        // this.inputAddress = this.order.querySelector('.form__input');
-        this.orderButton = this.container.querySelector('.order__button');
-
-
-
-        this.orderButton.addEventListener('click', () => {
-            this.events.emit('contacts:open')
+        this.paymentBtn = this.container.querySelectorAll('.button_alt');
+        this.paymentBtn.forEach((item) => {
+            item.addEventListener('click', () =>{
+                this.events.emit('order:button', {paymentBtn: item.name});
+                
+            })
         })
     }
 
-
-
+    togglePaymant(data: string) {
+		this.paymentBtn.forEach((item) => {
+			if (item.name === data) {
+				item.classList.replace('button_alt', 'button_alt-active');
+			} else {
+				item.classList.replace('button_alt-active', 'button_alt');
+			}
+		});
+	}
 }
-
-
-
-
-// При сабмите инициирует событие передавая в него объект с данными из полей ввода формы. При изменении данных в полях ввода инициирует событие изменения данных. Предоставляет методы для отображения ошибок и управления активностью кнопки сохранения
-
-// Поля класса содержат элементы разметки форм:
-// ```
-// formElement: HTMLFormElement;
-// inputElement: HTMLInputElement;
-
-// ```
-// В конструктор класса передается DOM элемент темплейта.\
-// ```
-// constructor(formElement: HTMLFormElement, handleFormSubmit: function)
-// ```
-
-// Методы:
-//  - render() - выводит элемент формы для выведения на страницу
-//  - setValue(value: string) - позволяет заполнять форму
-//  - getValue() - возвращает значение из поля ввода
-//  - clearValue(formElement: HTMLFormElement) - очищает форму
-
-//  #### Класс FormPayment
-// Данный класс расширяет класс Form. И предназначен для реализации формы для выбора способа оплаты и адреса доставки.\
-// Поля класса:
-// ```
-// order: HTMLElementTemplate;
-// formOrder: HTMLFormElement;
-// buttonPaymentOnline: HTMLButtonElement - кнопка для выбора способа оплаты (онлайн)
-// buttonPaymentCash: HTMLButtonElement - кнопка для выбора способа оплаты (при получении)
-// inputAddress: HTMLInputElement - инпут для ввода пользователем адреса
-// orderButton: HTMLButtonElement - кнопка для сабмита данных
-
-// ```
-// Конструктор:
-// ```
-// constructor(template: HTMLElementTemplate, events: IEvents)
-// ```
-// Методы:
 
 // <template id="order">
 // 		<form class="form" name="order">

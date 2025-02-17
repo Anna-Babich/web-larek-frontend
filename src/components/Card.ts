@@ -48,17 +48,17 @@ export class Card extends Component<IProduct>{
         if(this.container.classList.contains('card_full')) {
             this.cardButton.addEventListener('click', () => {
                 this.events.emit('product:buy', this)
-                this.events.emit('button:block', this)
+                // this.events.emit('button:block', this)
                 this.setDisabled(this.cardButton, true);
             })
         }
 
-        if(this.container.classList.contains('basket')) {
-            this.basketButton.addEventListener('click', () => {
-                this.events.emit('basket:buy')
-                // this.setDisabled(this.basketButton, true);
-            })
-        }
+        // if(this.container.classList.contains('basket')) {
+        //     this.basketButton.addEventListener('click', () => {
+        //         // this.events.emit('basket:buy')
+        //         // this.setDisabled(this.basketButton, true);
+        //     })
+        // }
 
         if(this.container.classList.contains('basket__item')) {
             this.btnDeleteInBasket.addEventListener('click', () => {
