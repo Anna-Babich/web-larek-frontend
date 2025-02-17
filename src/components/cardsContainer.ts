@@ -2,11 +2,11 @@ import {Component} from "./base/Component";
 import { IEvents } from "./base/events";
 import {ensureElement} from "../utils/utils";
 
-interface ICardContainer {
-    catalog: HTMLElement[];
-}
+// interface ICardContainer {
+//     catalog: HTMLElement[];
+// }
 
-export class CardsContainer extends Component<ICardContainer> {
+export class CardsContainer<T> extends Component<T> {
     _catalog: HTMLElement;
     _counter: HTMLElement;
     _wrapper: HTMLElement;
