@@ -1,17 +1,15 @@
 import {IEvents} from './base/events';
 import {IProduct, IProductsData, TBasket} from '../types/index';
 
-export class ProductData implements IProductsData{
-    _products: IProduct[];
-    _preview: string | null;
-
-    // _page: TProductPage;
-    _basket: TBasket[];
+export class ProductData implements IProductsData {
     events: IEvents;
 
+    _products: IProduct[];
+    _basket: TBasket[];
+    
     constructor(events: IEvents) {
         this.events = events;
-         this._basket = [];
+        this._basket = [];
     }
 
     // Чтение всего массива товаров
@@ -35,13 +33,12 @@ export class ProductData implements IProductsData{
 
     getResult(arrayBasket: TBasket[]): number{
         let res: number = 0;
-        arrayBasket.forEach((item: any) => {
-            res = res + item.price;
+        arrayBasket.forEach((item) => {
+            res += item.price;
         })
         return res;
     }
 
-   
     addProductBasket(product: IProduct): void {
         const {id, title, price} = product;
         const obj = {id, title, price};
@@ -54,37 +51,10 @@ export class ProductData implements IProductsData{
         this.events.emit('basket:open');
     }
 
-    setPreview(cardId: string | null) {
-        if (!cardId) {
-            this._preview = null;
-            return;
-        }
-        const selectedCard = this.getProduct(cardId);
-        if (selectedCard) {
-            this._preview = cardId;
-            this.events.emit('product:selected')
-        }
-    }
-
-    blockButton (idProduct: string): boolean {
+    itemInBasket (idProduct: string): boolean {
         const found = this._basket.find((item) => {
             return item.id === idProduct;
         });
         return found ? true : false;
     }
 }
-
-
-// Запись массива товаров в класс
-    // set product(products: IProduct[]) {
-    //     this._products = products;
-    //     this.events.emit('products:changed')
-    // }
-
-    // getBasket () {
-    //     return this._basket;
-    // }
-
-    // get preview () {
-    //     return this._preview;
-    // }

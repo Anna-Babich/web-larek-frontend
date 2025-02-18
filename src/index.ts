@@ -1,17 +1,14 @@
 import './scss/styles.scss';
-import {EventEmitter, IEvents} from '../src/components/base/events';
+import {EventEmitter} from '../src/components/base/events';
 import {ProductData} from './components/ProductsData';
 import {UserData} from './components/UserData';
-import {IApi, IProduct} from './types';
 import {AppApi} from './components/AppAPI';
-import {Api} from './components/base/api';
 import {CDN_URL, API_URL, settings} from './utils/constants';
 import {Card} from './components/Card';
 import {ensureElement, cloneTemplate} from './utils/utils';
 import {CardsContainer} from './components/cardsContainer';
 import {Modal} from './components/Modal';
 import {Basket} from './components/Basket';
-import {Form} from './components/Form';
 import {FormPayment} from './components/FormPayment'
 import {FormContacts} from './components/FormContact';
 import {Success} from './components/Success';
@@ -20,47 +17,46 @@ import {TForm} from './types/index';
 const events = new EventEmitter();
 const productData = new ProductData(events);
 const userData = new UserData(events);
-const modalContainer = document.querySelector('.modal') as HTMLElement;
 const api = new AppApi(CDN_URL, API_URL, settings);
+
+const modalContainer = document.querySelector('.modal') as HTMLElement;
 const modal = new Modal(modalContainer, events);
+const cardTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
+const cardsContainer = new CardsContainer(document.querySelector('.gallery'), events);
+const page = new CardsContainer(document.querySelector('.page'), events);
 
 events.onAll((event) => {
     console.log(event.eventName, event.data);
 })
 
-const cardTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
-const cardsContainer = new CardsContainer(document.querySelector('.gallery'), events);
-const page = new CardsContainer(document.querySelector('.page'), events);
-
-
 // Запрос на сервер для получения товаров
 api.getProducts()
     .then((items: any) => {
-            productData.setProducts(items);
-            events.emit('initialData:loaded'); 
+        productData.setProducts(items);
+        events.emit('initialData:loaded'); 
     })
     .catch((err: any) => {
         console.error(err);
     });
-
 events.on('initialData:loaded', () => {
-        const cardsArray = productData.product.map((card) => {
+    const cardsArray = productData.product.map((card) => {
         const cardInstant = new Card(cloneTemplate(cardTemplate), events);
         return cardInstant.render(card);
     });
     cardsContainer.render({catalog: cardsArray});
 })
 
-
+// Превью товара
 const cardModal = new Card(cloneTemplate(ensureElement<HTMLTemplateElement>('#card-preview')), events);
 events.on('card:select', (data: HTMLElement) => {
-    let boo = productData.blockButton(data.id);
+    // Проверка на нахождения this.товара в корзине
+    let boo = productData.itemInBasket(data.id);
+    // Юлокировка кнопки "В корзину", если товар уже там
     if(boo === true) {
         cardModal.toggleButton(true)
     } else {
         cardModal.toggleButton(false);
     }
-
     modal.render({
         content:  cardModal.render(productData.getProduct(data.id))
     });
@@ -69,12 +65,14 @@ events.on('card:select', (data: HTMLElement) => {
 
 // Работа с корзиной
 const basket = new Basket(cloneTemplate(ensureElement<HTMLTemplateElement>('#basket')), events);
-events.on('basket:open', (data: HTMLElement) => {
+events.on('basket:open', () => {
+    // Блокировка кнопки "Оформить" в корзине, если массив корзины = 0
     if(productData._basket.length === 0) {
         basket.buttonToggle(true);
     } else { 
         basket.buttonToggle(false);
     }
+
     const basketList = new CardsContainer(document.querySelector('.basket__list'), events);
     const array = productData._basket.map((card) => {
         const cardInstant = new Card(cloneTemplate(ensureElement<HTMLTemplateElement>('#card-basket')), events);
@@ -83,8 +81,13 @@ events.on('basket:open', (data: HTMLElement) => {
     });
 
     basketList.render({catalog: array});
-    basket.price.textContent = `${productData.getResult(productData._basket)} синапсов`
-    page._counter.textContent = `${productData._basket.length}`
+    
+    // Общая стоимость покупок в корзине
+    basket.price.textContent = `${productData.getResult(productData._basket)} синапсов`;
+    
+    // Изменение счетчика на главыной странице
+    page._counter.textContent = `${productData._basket.length}`;
+    
     modal.render({
         content:  basket.render()
     });
@@ -102,49 +105,54 @@ events.on('basket:delete', (data: HTMLElement) => {
 })
 
 // Изменение счетчика корзины на главной странице
-events.on('basket:changed', (data: HTMLElement) => {
+events.on('basket:changed', () => {
     page._counter.textContent = `${productData._basket.length}`;
 })
 
 
 // Форма оплаты
-const formPayment = new FormPayment(cloneTemplate(ensureElement<HTMLTemplateElement>('#order')), events)
+const formPayment = new FormPayment(cloneTemplate(ensureElement<HTMLTemplateElement>('#order')), events);
+const formContacts = new FormContacts(cloneTemplate(ensureElement<HTMLTemplateElement>('#contacts')), events);
+
 events.on('open:order', () => {
+    // Заполнение в _order поля общей стоимости 
     userData._order.total = productData.getResult(productData._basket);
+    
+    // Заполнение в _order поля массива с id купленных товаров
     let total: string[] = [];
     productData._basket.forEach((item) => {
         total.push(item.id);
         return total;
     })
     userData._order.items = total;
+
     modal.render({
         content: formPayment.render()
     });
 })
-// 1/11111111
+
+// Заполнение в _order поля способа оплаты
 events.on('order:button', (data: {paymentBtn: string}) => {
-    console.log(data.paymentBtn);
     formPayment.togglePaymant(data.paymentBtn);
     userData.setPayment(data.paymentBtn);
-    console.log(userData._order);
 });
 
+// Проверка при каждом вводе в инпут address
 events.on('order:input', (data: { field: keyof TForm, value: string }) => {
     userData.setField(data.field, data.value);
 });
 
-
 // Форма контактов
-const formContacts = new FormContacts(cloneTemplate(ensureElement<HTMLTemplateElement>('#contacts')), events)
 events.on('order:submit', () => {
     modal.render({content: formContacts.render()});
 })
 
+// Проверка при каждом вводе в инпут email и phone
 events.on('contacts:input', (data: { field: keyof TForm, value: string }) => {
 	userData.setField(data.field, data.value);
-    
 });
 
+// Выведение ошибок и смена активности кнопок в формах
 events.on('forms:errors', (errors: Partial<TForm>) => {
     const { address, email, phone} = errors;
     formPayment.valid = !address;
@@ -153,25 +161,10 @@ events.on('forms:errors', (errors: Partial<TForm>) => {
     formContacts._errors = Object.values({email, phone}).filter(i => !!i).join(', ');
 })
 
-
-
-// events.on('formP:change', (errors: Partial<TForm>) => {
-//     const { address } = errors;
-//     formPayment.valid = !address;
-//     formPayment._errors = Object.values({address}).filter(i => !!i).join('; ');
-// })
-
-// events.on('formC:change', (errors: Partial<TForm>) => {
-//     const { email, phone } = errors;
-//     formContacts.valid = !email && !phone;
-//     formContacts._errors = Object.values({email, phone}).filter(i => !!i).join('; ');
-// })
-
-
+// Отправки на сервер данных пользователя
 events.on('order:post', () => {
     api.postUser(userData._order)
-        .then((data) => {
-            console.log(data);
+        .then(() => {
             events.emit('success:open'); 
         })
         .catch((err: any) => {
@@ -183,30 +176,39 @@ events.on('order:post', () => {
 const success = new Success(cloneTemplate(ensureElement<HTMLTemplateElement>('#success')), events)
 events.on('success:open', () => {
     success.successDescription.textContent = `Списано ${productData.getResult(productData._basket)} синапсов`
-    modal.render({content: success.render()});
+    
+    modal.render({
+        content: success.render()
+    });
+    
+    // Очистка корзины
     productData._basket = [];
+
+    // Обнуление счетчика на главной
     page._counter.textContent = `${productData._basket.length}`;
 
+    // Очистка объекта с данными пользователя
     userData.clearForm();
+    // Очистка форм
     formPayment.clearForm();
     formContacts.clearForm();
+    formPayment.buttonClear();
+    // Блокировка кнопок
     formPayment.valid = false;
     formContacts.valid = false;
-    formPayment.buttonClear();
-    console.log(userData._order);
 })
 
-// закрыть окно успешной покупки
+// Закрытие окна успешной покупки
 events.on('success:close', () => {
     modal.close();
 })
 
-// Блокируем прокрутку страницы если открыта модалка
+// Блокирвока прокрутки страницы
 events.on('modal:open', () => {
     page.setLocked(true);
 });
 
-// ... и разблокируем
+// Разблокировка прокрутки страницы
 events.on('modal:close', () => {
     page.setLocked(false);
 });

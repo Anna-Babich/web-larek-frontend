@@ -6,8 +6,9 @@ interface IModal {
     content: HTMLElement;
 }
 
-export class Modal <IModal> extends Component<IModal> {
+export class Modal extends Component<IModal> {
     events: IEvents;
+
     _content: HTMLElement;
     closeButton: HTMLButtonElement;
 

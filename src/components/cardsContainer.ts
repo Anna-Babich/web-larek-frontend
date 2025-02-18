@@ -2,17 +2,12 @@ import {Component} from "./base/Component";
 import { IEvents } from "./base/events";
 import {ensureElement} from "../utils/utils";
 
-// interface ICardContainer {
-//     catalog: HTMLElement[];
-// }
-
 export class CardsContainer<T> extends Component<T> {
-    _catalog: HTMLElement;
+    events: IEvents;
+
     _counter: HTMLElement;
     _wrapper: HTMLElement;
     _basket: HTMLElement;
-
-    events: IEvents;
 
     constructor (protected container: HTMLElement, events: IEvents) {
         super(container);
@@ -25,7 +20,6 @@ export class CardsContainer<T> extends Component<T> {
         this._basket.addEventListener('click', () => {
             this.events.emit('basket:open');
         })
-        
     }
 
     set catalog (items: HTMLElement[]) {
