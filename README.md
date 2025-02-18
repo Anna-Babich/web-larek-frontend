@@ -293,13 +293,12 @@ constructor(protected container: HTMLElement, events: IEvents)
 
 Поля класса содержат элементы разметки форм:
  - events: IEvents - экземпляр класса `EventEmitter` для инициации событий при изменении данных
- - formElement: HTMLFormElement;
- - inputElement: HTMLInputElement;
+ - 
 
 
 В конструктор класса передается DOM элемент темплейта.\
 ```
-constructor(formElement: HTMLFormElement, handleFormSubmit: function)
+constructor(protected container: HTMLElement, events: IEvents)
 ```
 
 Методы:
@@ -321,7 +320,7 @@ constructor(formElement: HTMLFormElement, handleFormSubmit: function)
 
 Конструктор:
 ```
-constructor(protected container: HTMLElement, events: IEvents)
+ constructor(protected container: HTMLElement, events: IEvents)
 ```
 Методы:
  - 
@@ -371,7 +370,7 @@ constructor(protected container: HTMLElement, events: IEvents)
 - `data:changed` - изменение массива товаров
 - `basket:changed` - изменен массив корзины
 - `product:selected` - изменение в превью
-- `user:changed` - изменение данных пользователя
+- `forms:errors` - изменение ошибок при вводе в инпут
 
 *События, возникающие при взаимодействии пользователя с интерфейсом (генерируются классами, отвечающими за представление)*
 - `card:select` - открытие модального окна с товаром
@@ -387,8 +386,8 @@ constructor(protected container: HTMLElement, events: IEvents)
 - `modal:close` -  состояние закрытого модального окна
 
   
-????? - `basket:buy` -
-???? - `button:block` -
+- `order:button` - генерируется при нажатии на кнопки выбора способа оплаты
+- `order:post` - генерируется по кнопке "Оформить заказ" => запрос на сервер
 
 
 
