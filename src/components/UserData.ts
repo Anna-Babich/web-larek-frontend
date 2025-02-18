@@ -18,6 +18,8 @@ export class UserData implements IUserData {
     _total: number;
     _items: string[];
 
+    errorForm: TFormErrors;
+
     errorPayment: TFormErrors;
     errorContacts: TFormErrors;
     events: IEvents;
@@ -72,47 +74,79 @@ setPayment(data: string) {
         this._items = data;
     }
 
-    setPaymentField(field: keyof TForm, value: string) {
+
+
+    setField(field: keyof TForm, value: string) {
         console.log(value);
         this._order[field] = value;
 
-        if (this.validatePayment()) {
+        if (this.validate()) {
             console.log('успешно')
         }
     }
 
-    validatePayment() {
-        const errors: typeof this.errorPayment = {};
+    validate() {
+        const errors: typeof this.errorForm = {};
         if (!this._order.address) {
-            errors.email = 'Необходимо указать адрес';
+            errors.address = 'Необходимо указать адрес';
         }
-        this.errorPayment = errors;
-        this.events.emit('formP:change', this.errorPayment);
-        return Object.keys(errors).length === 0;
-    }
- // для контактов
-    setContactsField(field: keyof TForm, value: string) {
-        console.log(value);
-        this._order[field] = value;
-
-        if (this.validationContacts()) {
-            this.events.emit('order:ready', this._order);
-
-        }
-    }
-
-    validationContacts() {
-        const errors: typeof this.errorContacts = {};
         if (!this._order.email) {
             errors.email = 'Необходимо указать email';
         }
         if(!this._order.phone) {
             errors.phone = 'Необходимо указать телефон'
         }
-        this.errorContacts = errors;
-        this.events.emit('formC:change', this.errorContacts);
+        this.errorForm = errors;
+        this.events.emit('forms:errors', this.errorForm);
         return Object.keys(errors).length === 0;
     }
+
+
+
+
+
+
+//     setPaymentField(field: keyof TForm, value: string) {
+//         console.log(value);
+//         this._order[field] = value;
+
+//         if (this.validatePayment()) {
+//             console.log('успешно')
+//         }
+//     }
+
+//     validatePayment() {
+//         const errors: typeof this.errorForm = {};
+//         if (!this._order.address) {
+//             errors.address = 'Необходимо указать адрес';
+//         }
+//         this.errorForm = errors;
+//         this.events.emit('forms:errors', this.errorForm);
+//         return Object.keys(errors).length === 0;
+//     }
+//  // для контактов
+//     setContactsField(field: keyof TForm, value: string) {
+//         console.log(value);
+//         this._order[field] = value;
+
+//         if (this.validationContacts()) {
+//             this.events.emit('order:ready', this._order);
+
+//         }
+//     }
+
+//     validationContacts() {
+//         const errors: typeof this.errorForm = {};
+//         if (!this._order.email) {
+//             errors.email = 'Необходимо указать email';
+//         }
+//         if(!this._order.phone) {
+//             errors.phone = 'Необходимо указать телефон'
+//         }
+//         this.errorForm = errors;
+//         this.events.emit('forms:errors', this.errorForm);
+//         return Object.keys(errors).length === 0;
+//     }
 
 
     clearForm() {

@@ -121,7 +121,7 @@ events.on('open:order', () => {
         content: formPayment.render()
     });
 })
-
+// 1/11111111
 events.on('order:button', (data: {paymentBtn: string}) => {
     console.log(data.paymentBtn);
     formPayment.togglePaymant(data.paymentBtn);
@@ -130,7 +130,7 @@ events.on('order:button', (data: {paymentBtn: string}) => {
 });
 
 events.on('order:input', (data: { field: keyof TForm, value: string }) => {
-    userData.setPaymentField(data.field, data.value);
+    userData.setField(data.field, data.value);
 });
 
 
@@ -141,24 +141,31 @@ events.on('order:submit', () => {
 })
 
 events.on('contacts:input', (data: { field: keyof TForm, value: string }) => {
-	userData.setContactsField(data.field, data.value);
+	userData.setField(data.field, data.value);
     
 });
 
-events.on('formP:change', (errors: Partial<TForm>) => {
-    const { address } = errors;
+events.on('forms:errors', (errors: Partial<TForm>) => {
+    const { address, email, phone} = errors;
     formPayment.valid = !address;
-    formPayment._errors = Object.values({address}).filter(i => !!i).join('; ');
-})
-
-
-
-
-events.on('formC:change', (errors: Partial<TForm>) => {
-    const { email, phone } = errors;
     formContacts.valid = !email && !phone;
-    formContacts._errors = Object.values({email, phone}).filter(i => !!i).join('; ');
+    formPayment._errors = Object.values({address}).filter(i => !!i).join(', ');
+    formContacts._errors = Object.values({email, phone}).filter(i => !!i).join(', ');
 })
+
+
+
+// events.on('formP:change', (errors: Partial<TForm>) => {
+//     const { address } = errors;
+//     formPayment.valid = !address;
+//     formPayment._errors = Object.values({address}).filter(i => !!i).join('; ');
+// })
+
+// events.on('formC:change', (errors: Partial<TForm>) => {
+//     const { email, phone } = errors;
+//     formContacts.valid = !email && !phone;
+//     formContacts._errors = Object.values({email, phone}).filter(i => !!i).join('; ');
+// })
 
 
 events.on('order:post', () => {
@@ -185,6 +192,7 @@ events.on('success:open', () => {
     formContacts.clearForm();
     formPayment.valid = false;
     formContacts.valid = false;
+    formPayment.buttonClear();
     console.log(userData._order);
 })
 

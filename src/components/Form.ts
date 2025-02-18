@@ -12,7 +12,7 @@ export class Form<T> extends Component<T> {
     events: IEvents;
 
     inputs: NodeListOf<HTMLInputElement>;
-    order: HTMLFormElement;
+    // order: HTMLFormElement;
     formName: string;
     orderButton: HTMLButtonElement;
     contactsButton: HTMLButtonElement;
@@ -27,7 +27,7 @@ export class Form<T> extends Component<T> {
         this.events = events;
 
         this.inputs = this.container.querySelectorAll<HTMLInputElement>('.form__input');
-        this.order = this.container.querySelector('.form');
+        // this.order = this.container.querySelector('.form');
         this.formName = this.container.getAttribute('name');
         this.orderButton = this.container.querySelector('.order__button');
         this.contactsButton = this.container.querySelector('.button');
@@ -64,7 +64,6 @@ export class Form<T> extends Component<T> {
     set valid(value: boolean) {
         console.log(value);
         this.orderButton.disabled = !value;
-        this.contactsButton.disabled = !value;
     }
 
     set _errors(value: string) {

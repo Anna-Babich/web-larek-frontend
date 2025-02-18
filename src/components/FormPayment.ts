@@ -18,6 +18,8 @@ export class FormPayment extends Form<IFormState> {
 
         // this.input1 = this.container.querySelector('.form__input')
 
+
+
         this.paymentBtn = this.container.querySelectorAll('.button_alt');
         this.paymentBtn.forEach((item) => {
             item.addEventListener('click', () =>{
@@ -32,10 +34,17 @@ export class FormPayment extends Form<IFormState> {
 			if (item.name === data) {
 				item.classList.replace('button_alt', 'button_alt-active');
 			} else {
-				item.classList.replace('button_alt-active', 'button_alt');
+			    item.classList.replace('button_alt-active', 'button_alt');
 			}
 		});
 	}
+
+    buttonClear () {
+        this.paymentBtn.forEach((item) => {
+            item.classList.remove('button_alt-active');
+            item.classList.add('button_alt');
+        })
+    }
 }
 
 // <template id="order">
