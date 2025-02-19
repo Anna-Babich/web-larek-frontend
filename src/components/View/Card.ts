@@ -1,6 +1,6 @@
-import {IProduct} from '../types/index';
-import {IEvents} from './base/events';
-import {Component} from './base/Component';
+import {IProduct} from '../../types/index';
+import {IEvents} from '../base/events';
+import {Component} from '../base/Component';
 
 export class Card extends Component<IProduct> {
     events: IEvents;
@@ -57,9 +57,19 @@ export class Card extends Component<IProduct> {
         this.setText(this.descriptionCard, description);
     }
 
-    set category (category: string) {
-        this.categoryCard.textContent = category;
-    }
+    protected categoryColors = <Record<string, string>>{ 
+        "софт-скил": 'soft', 
+        "другое": 'other', 
+        "кнопка": 'button', 
+        "хард-скил": 'hard', 
+        "дополнительное": 'additional' 
+   }
+   set category(value: string) { 
+      this.setText(this.categoryCard, value); 
+        if (this.categoryCard) { 
+          this.categoryCard.className = `card__category card__category_${this.categoryColors[value]}`;
+        } 
+   }
 
     set image (img: string) {
         this.setImage(this.imageCard, img);

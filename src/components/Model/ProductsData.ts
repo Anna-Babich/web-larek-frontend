@@ -1,5 +1,5 @@
-import {IEvents} from './base/events';
-import {IProduct, IProductsData, TBasket} from '../types/index';
+import {IEvents} from '../base/events';
+import {IProduct, IProductsData, TBasket} from '../../types/index';
 
 export class ProductData implements IProductsData {
     events: IEvents;

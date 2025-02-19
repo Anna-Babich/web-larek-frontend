@@ -1,6 +1,6 @@
-import {Component} from "./base/Component";
-import {TBasket} from "../types";
-import {IEvents} from "./base/events";
+import {Component} from "../base/Component";
+import {TBasket} from "../../types";
+import {IEvents} from ".././base/events";
 
 interface IBasket {
     items: TBasket[];

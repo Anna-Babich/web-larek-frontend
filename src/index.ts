@@ -1,17 +1,17 @@
 import './scss/styles.scss';
 import {EventEmitter} from '../src/components/base/events';
-import {ProductData} from './components/ProductsData';
-import {UserData} from './components/UserData';
+import {ProductData} from './components/Model/ProductsData';
+import {UserData} from './components/Model/UserData';
 import {AppApi} from './components/AppAPI';
 import {CDN_URL, API_URL, settings} from './utils/constants';
-import {Card} from './components/Card';
+import {Card} from './components/View/Card';
 import {ensureElement, cloneTemplate} from './utils/utils';
-import {CardsContainer} from './components/cardsContainer';
-import {Modal} from './components/Modal';
-import {Basket} from './components/Basket';
-import {FormPayment} from './components/FormPayment'
-import {FormContacts} from './components/FormContact';
-import {Success} from './components/Success';
+import {CardsContainer} from './components/View/cardsContainer';
+import {Modal} from './components/View/Modal';
+import {Basket} from './components/View/Basket';
+import {FormPayment} from './components/View/FormPayment'
+import {FormContacts} from './components/View/FormContact';
+import {Success} from './components/View/Success';
 import {TForm} from './types/index';
 
 const events = new EventEmitter();

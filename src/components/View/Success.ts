@@ -1,5 +1,5 @@
-import {IEvents} from './base/events';
-import {Component} from './base/Component';
+import {IEvents} from '../base/events';
+import {Component} from '../base/Component';
 
 interface ISuccess {
     content: HTMLElement;

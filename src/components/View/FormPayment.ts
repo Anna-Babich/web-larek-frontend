@@ -1,4 +1,4 @@
-import {IEvents} from './base/events';
+import {IEvents} from '../base/events';
 import {Form} from './Form';
 import {IFormState} from './Form'
 

@@ -1,6 +1,6 @@
-import {Component} from "./base/Component";
-import { IEvents } from "./base/events";
-import {ensureElement} from "../utils/utils";
+import {Component} from "../base/Component";
+import { IEvents } from "../base/events";
+import {ensureElement} from "../../utils/utils";
 
 export class CardsContainer<T> extends Component<T> {
     events: IEvents;

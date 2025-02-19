@@ -1,5 +1,5 @@
-import {IEvents} from './base/events';
-import {IUserData, IUser, TFormErrors, TForm} from '../types/index'
+import {IEvents} from '../base/events';
+import {IUserData, IUser, TFormErrors, TForm} from '../../types/index'
 
 export class UserData implements IUserData {
     events: IEvents;
