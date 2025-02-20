@@ -76,7 +76,12 @@ export class Card extends Component<IProduct> {
     }
 
     set price (price: number) {
-        this.priceCard.textContent = String(`${price} ` + `синапсов`);
+        if(price === null) {
+            this.priceCard.textContent = String(`Бесценно`);
+            this.toggleButton(true);
+        } else {
+            this.priceCard.textContent = String(`${price} ` + `синапсов`); 
+        }
     }
 
     set index(index: number) {

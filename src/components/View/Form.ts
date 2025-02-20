@@ -30,7 +30,7 @@ export class Form<T> extends Component<T> {
             const target = event.target as HTMLInputElement;
             const field = target.name;
             const value = target.value;
-            this.events.emit(`${this.formName}:input`, { field, value });
+            this.events.emit(`${this.formName}:input`, { field, value});
         });  
     }
 

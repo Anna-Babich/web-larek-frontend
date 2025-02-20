@@ -35,6 +35,9 @@ export class UserData implements IUserData {
 
     protected validate() {
         const errors: typeof this.errorForm = {};
+        if (!this._order.payment) {
+            errors.payment = 'Необходимо указать способ оплаты';
+        }
         if (!this._order.address) {
             errors.address = 'Необходимо указать адрес';
         }

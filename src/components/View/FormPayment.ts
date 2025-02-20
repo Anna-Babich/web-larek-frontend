@@ -20,6 +20,12 @@ export class FormPayment extends Form<IFormState> {
                 this.events.emit('order:button', {paymentBtn: item.name});
             });
         });
+        this.container.addEventListener('click', (event) => {
+            const target = event.target as HTMLInputElement;
+            const field = this.paymentBtn;
+            const value = target.name;
+            this.events.emit(`${this.formName}:input`, { field, value });
+        });  
     }
 
     set valid(value: boolean) {
@@ -29,9 +35,9 @@ export class FormPayment extends Form<IFormState> {
     togglePaymant(data: string) {
 		this.paymentBtn.forEach((item) => {
 			if (item.name === data) {
-				item.classList.replace('button_alt', 'button_alt-active');
+                item.classList.replace('button_alt', 'button_alt-active');
 			} else {
-			    item.classList.replace('button_alt-active', 'button_alt');
+                item.classList.replace('button_alt-active', 'button_alt');
 			}
 		});
 	}

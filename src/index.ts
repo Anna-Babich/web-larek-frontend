@@ -154,10 +154,10 @@ events.on('contacts:input', (data: { field: keyof TForm, value: string }) => {
 
 // Выведение ошибок и смена активности кнопок в формах
 events.on('forms:errors', (errors: Partial<TForm>) => {
-    const { address, email, phone} = errors;
-    formPayment.valid = !address;
+    const { payment, address, email, phone} = errors;
+    formPayment.valid = !address && !payment;
     formContacts.valid = !email && !phone;
-    formPayment._errors = Object.values({address}).filter(i => !!i).join(', ');
+    formPayment._errors = Object.values({address, payment}).filter(i => !!i).join(', ');
     formContacts._errors = Object.values({email, phone}).filter(i => !!i).join(', ');
 })
 
